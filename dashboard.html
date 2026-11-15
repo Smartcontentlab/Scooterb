@@ -1,0 +1,554 @@
+<title>Album Launch HQ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@600&family=Syne:wght@700&display=swap">
+<style>
+/* Layout: indigo record-sleeve header with a sticky tab rail; each tab is one workspace of cards on a cool paper ground. */
+:root{
+  --bg:#F2F1F6;--surface:#FFFFFF;--sunk:#E9E7F0;--ink:#1B1730;--muted:#5F5978;--line:#D9D5E6;
+  --brand:#2A1F5C;--brand-2:#3A2C7A;--on-brand:#F5F2FF;--on-brand-muted:#BDB4E6;
+  --accent:#C8440E;--accent-ink:#FFFFFF;--ok:#1B7F50;--warn:#96620F;--bad:#B92D48;
+  --t-teaser:#7C4DFF;--t-lyric:#D6336C;--t-bts:#0E8F8F;--t-interview:#B26A00;--t-perf:#2F6FED;--t-cta:#C8440E;--t-fan:#3D9A3D;
+  --display:"Bricolage Grotesque","Inter",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:10px;--gap:16px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#131020;--surface:#1C1830;--sunk:#262141;--ink:#ECE9F7;--muted:#A8A1C2;--line:#352F54;
+  --brand:#1E1842;--brand-2:#2B2360;--on-brand:#F5F2FF;--on-brand-muted:#A99FD6;
+  --accent:#FF8847;--accent-ink:#1B1730;--ok:#4CC38A;--warn:#E5B454;--bad:#F2738C;
+  --t-teaser:#A58BFF;--t-lyric:#F06595;--t-bts:#3BC9C9;--t-interview:#F0A63C;--t-perf:#6C9BFF;--t-cta:#FF8847;--t-fan:#69C469;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131020;--surface:#1C1830;--sunk:#262141;--ink:#ECE9F7;--muted:#A8A1C2;--line:#352F54;
+  --brand:#1E1842;--brand-2:#2B2360;--on-brand:#F5F2FF;--on-brand-muted:#A99FD6;
+  --accent:#FF8847;--accent-ink:#1B1730;--ok:#4CC38A;--warn:#E5B454;--bad:#F2738C;
+  --t-teaser:#A58BFF;--t-lyric:#F06595;--t-bts:#3BC9C9;--t-interview:#F0A63C;--t-perf:#6C9BFF;--t-cta:#FF8847;--t-fan:#69C469;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand)}
+img{max-width:100%}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.45rem}h3{font-size:1.05rem}
+p{margin:0}a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:600 .7rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}.small{font-size:.85rem}.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+/* header */
+.top{background:var(--brand);color:var(--on-brand)}
+.top .wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap;padding-block:22px}
+.disc{flex:none;width:64px;height:64px;border-radius:50%;background:repeating-radial-gradient(circle,#0c0a18 0 2px,#1d1934 2px 4px);display:grid;place-items:center}
+.disc i{width:24px;height:24px;border-radius:50%;background:var(--accent);border:6px solid var(--on-brand)}
+.top .id{flex:1 1 230px;min-width:0}
+.top .eyebrow{color:var(--on-brand-muted)}
+.top h1{font-size:clamp(1.5rem,4vw,2.3rem);margin-top:6px;overflow-wrap:anywhere}
+.top h1 em{font-style:normal;color:var(--on-brand-muted);font-weight:500}
+.count{text-align:right;font-family:var(--mono)}
+.count b{display:block;font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.count span{font-size:.75rem;color:var(--on-brand-muted);letter-spacing:.08em;text-transform:uppercase}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--brand-2)}
+nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav a{flex:none;padding:12px 13px;color:var(--on-brand-muted);text-decoration:none;font:600 .86rem var(--body);border-bottom:3px solid transparent}
+nav a:hover{color:var(--on-brand)}
+nav a[aria-current="page"]{color:var(--on-brand);border-bottom-color:var(--accent)}
+main.wrap{padding-block:26px 60px;display:flex;flex-direction:column;gap:22px}
+
+/* building blocks */
+.head{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.grid{display:grid;gap:var(--gap)}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{justify-content:space-between}
+label.f{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:.85rem;min-width:0}
+label.f span.hint{font-weight:400;color:var(--muted)}
+input,select,textarea,button{font:inherit;color:inherit}
+input[type=text],input[type=date],input[type=url],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;min-width:0}
+textarea{min-height:76px;resize:vertical}
+input[type=color]{width:44px;height:36px;padding:2px;border:1px solid var(--line);border-radius:7px;background:var(--bg)}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none;margin:2px 0 0}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:7px;padding:9px 14px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:5px 10px;font-size:.82rem}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.84rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:6px;font:600 .72rem var(--mono);padding:2px 8px;border-radius:999px;background:var(--sunk);white-space:nowrap}
+.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.t-teaser{background:var(--t-teaser)}.t-lyric{background:var(--t-lyric)}.t-bts{background:var(--t-bts)}.t-interview{background:var(--t-interview)}.t-perf{background:var(--t-perf)}.t-cta{background:var(--t-cta)}.t-fan{background:var(--t-fan)}
+.meter{display:flex;flex-direction:column;gap:5px}
+.mrow{display:flex;justify-content:space-between;font-size:.85rem;font-weight:600}
+.mrow b{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--muted)}
+.bar{height:7px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .25s}
+.note{background:var(--sunk);border-radius:var(--r);padding:12px 14px;font-size:.9rem;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.check:first-of-type{border-top:0}
+.check .tx{flex:1;min-width:0}
+.check input:checked+.tx{color:var(--muted);text-decoration:line-through}
+.check .due{font:600 .72rem var(--mono);color:var(--muted);white-space:nowrap;padding-top:3px}
+.check .due.late{color:var(--bad)}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th{font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px}
+td{padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
+td input,td select{padding:6px 8px}
+
+/* discovery */
+.q{display:flex;flex-direction:column;gap:7px}
+.q>b{font-size:.92rem}
+.moods{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.mood{aspect-ratio:4/5;border-radius:8px;border:3px solid transparent;cursor:pointer;padding:10px;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;font:700 .95rem var(--display);gap:2px}
+.mood small{font:400 .72rem var(--body);opacity:.85}
+.mood[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--surface) inset}
+.m1{background:radial-gradient(circle at 30% 20%,#f3c98b,#a8552a 60%,#3b1d12);color:#fff5e6}
+.m2{background:linear-gradient(160deg,#0b0620 30%,#3a0ca3 65%,#f72585);color:#fdf0ff}
+.m3{background:linear-gradient(180deg,#f4f4f1 62%,#111 62%);color:#fff}
+.m4{background:repeating-linear-gradient(-45deg,#ffd60a 0 14px,#111 14px 16px);color:#111}
+.m4 span,.m4 small{background:#ffd60a;align-self:flex-start;padding:0 4px}
+.m5{background:linear-gradient(#12372a,#0b2219);color:#e6d3a3;box-shadow:inset 0 0 0 8px #12372a,inset 0 0 0 9px #c9a86a}
+.m6{background:linear-gradient(140deg,#cdb4f6,#ffc8dd 55%,#ffe5b4);color:#3d2a55}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .dow{font:600 .68rem var(--mono);color:var(--muted);text-align:center;padding:4px 0;letter-spacing:.08em}
+.day{background:var(--bg);border:1px solid var(--line);border-radius:7px;min-height:84px;padding:5px;display:flex;flex-direction:column;gap:3px;cursor:pointer;text-align:left;overflow:hidden}
+.day.out{opacity:.45}
+.day.today .n{background:var(--ink);color:var(--bg);border-radius:99px;padding:0 6px}
+.day.rel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--bg))}
+.day.sel{outline:2px solid var(--ink);outline-offset:-2px}
+.day .n{font:600 .75rem var(--mono);align-self:flex-start}
+.day .p{display:flex;align-items:center;gap:4px;font-size:.7rem;white-space:nowrap;overflow:hidden}
+.day .p.done{opacity:.45;text-decoration:line-through}
+.day .ms{font-size:.66rem;font-weight:600;color:var(--accent);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.post{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.post .tx{flex:1;min-width:0}
+.post.done .tx{opacity:.5;text-decoration:line-through}
+.wk{display:flex;flex-direction:column;gap:8px}
+.wk>div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+@media (max-width:640px){.day{min-height:56px;padding:3px}.day .p span,.day .ms{display:none}.day .ps{display:flex;flex-wrap:wrap;gap:3px}}
+
+/* brand board + post mockups — colors come from the artist's own palette (--b0..--b4) */
+.bb{--b0:#1F1A3D;--b1:#5B3FD9;--b2:#FF5C8A;--b3:#F4F0FF;--b4:#0D0B1A;--bf:"Anton",sans-serif;--bt:"Inter",sans-serif}
+.sw{display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-size:.8rem;font-weight:600}
+.board{background:var(--b4);color:var(--b3);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;font-family:var(--bt)}
+.board .nm{font:400 clamp(2rem,7vw,3.4rem)/1 var(--bf);overflow-wrap:anywhere}
+.board .strip{display:flex;height:22px;border-radius:5px;overflow:hidden}
+.board .strip i{flex:1}
+.logo{width:92px;height:92px;border-radius:10px;border:2px dashed color-mix(in srgb,var(--b3) 45%,transparent);display:grid;place-items:center;font-size:.7rem;text-align:center;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:contain}
+.mocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:var(--gap)}
+.mock{display:flex;flex-direction:column;gap:8px;min-width:0}
+.art{aspect-ratio:4/5;border-radius:8px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;font-family:var(--bt);overflow:hidden}
+.art .big{font:400 clamp(1.5rem,3.4vw,2.1rem)/1.02 var(--bf);overflow-wrap:anywhere}
+.art .sm{font:600 .66rem var(--bt);letter-spacing:.14em;text-transform:uppercase}
+.a1{background:var(--b4);color:var(--b3)}.a2{background:var(--b3);color:var(--b4)}
+.a3{background:linear-gradient(150deg,var(--b0),var(--b1));color:var(--b3)}.a4{background:var(--b2);color:var(--b4)}
+.a5{background:var(--b0);color:var(--b3)}.a6{background:var(--b3);color:var(--b0);border:8px solid var(--b1)}
+.art .pill{align-self:flex-start;border:1.5px solid currentColor;border-radius:99px;padding:3px 10px;font:600 .68rem var(--bt)}
+.cap{font-size:.84rem;background:var(--sunk);border-radius:7px;padding:8px 10px}
+.tone{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:8px;align-items:center;font-size:.82rem}
+.tone span:last-child{text-align:right}
+
+/* timeline */
+.tl{display:flex;flex-direction:column}
+.tl .m{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.tl .m:first-child{border-top:0}
+.tl .t{font:600 .78rem var(--mono);color:var(--muted);padding-top:9px}
+.tl .m.now .t{color:var(--accent)}
+.tl .f2{display:grid;grid-template-columns:minmax(0,2.4fr) repeat(3,minmax(0,1fr)) auto;gap:6px}
+@media (max-width:760px){.tl .f2{grid-template-columns:repeat(2,minmax(0,1fr))}.tl .f2>:first-child{grid-column:1/-1}}
+pre.out{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:10px;max-height:240px;overflow:auto;font:400 .78rem/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="disc" aria-hidden="true"><i></i></div>
+  <div class="id"><div class="eyebrow" id="hCat"></div><h1 id="hTitle"></h1></div>
+  <div class="count"><b id="hCount"></b><span id="hPhase"></span></div>
+</div></header>
+<nav aria-label="Sections"><div class="wrap" id="nav"></div></nav>
+<main class="wrap" id="main"></main>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='albumLaunchHQ.v1',DAY=864e5;
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const pd=s=>{const[a,b,c]=String(s).split('-').map(Number);return new Date(a,b-1,c)};
+const addD=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const today=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};
+const fmt=(d,o={month:'short',day:'numeric'})=>d.toLocaleDateString('en-US',o);
+const tm=o=>o===0?'T-0':o<0?`T−${-o}`:`T+${o}`;
+
+/* ---------- content (edit these arrays to adapt the template) ---------- */
+const TABS=[['overview','Overview'],['discovery','Discovery'],['distribution','Distribution'],['calendar','Calendar'],['brand','Brand'],['assets','Assets'],['team','Team'],['milestones','Milestones'],['guide','Guide']];
+const TYPES={teaser:'Teaser',lyric:'Lyric snippet',bts:'Behind the scenes',interview:'Interview / talk',perf:'Performance',cta:'Announcement',fan:'Fan / community'};
+const PLATS={IG:'Instagram',TT:'TikTok',X:'X / Twitter',FB:'Facebook',LI:'LinkedIn',YT:'YouTube'};
+const PLAT_TIPS=[
+ ['TT','3–7 short videos a week','15–30s, hook in the first 2 seconds, one idea per video','Discovery engine. Test several hooks of the same song before spending on anything else.'],
+ ['IG','3–5 Reels a week, Stories most days','Reels 9:16, carousels 4:5, Stories for polls and Q&A','Where casual listeners turn into fans. Pin the pre-save, then the release post.'],
+ ['YT','1–3 Shorts a week, 1 long video per single','Shorts, visualizer, official audio, premiere on release day','Searchable and long-lived. Titles should read "Artist – Song (Official Visualizer)".'],
+ ['X','Daily, short','One lyric line, a reply thread, a quote-post of press','Conversation and press. Reply to everyone during release week.'],
+ ['FB','2–3 posts a week','Cross-posted Reels, event pages, link posts','Events and older or local audiences. Create an event for every show and listening party.'],
+ ['LI','About once a week','Text post with one photo: the business story, credits, lessons','Reaches brand partners, sync supervisors and industry people. Thank collaborators by name.']];
+const PHASES=[[-1e9,'Pre-production'],[-63,'Tease'],[-56,'Lead single'],[-28,'Second single'],[-14,'Countdown'],[0,'Release week'],[7,'Sustain'],[29,'Catalog']];
+const phaseOf=o=>PHASES.filter(p=>o>=p[0]).pop()[1];
+const WEEKLY={ // phase -> [day of week 0=Sun, type, platform, note]
+ 'Tease':[[1,'teaser','TT','Unreleased hook, 10–15s, no title yet'],[3,'bts','IG','Studio carousel: 5 photos, one-line caption'],[5,'teaser','IG','Reel: snippet with the date on screen'],[0,'fan','X','Ask a question fans can answer in three words']],
+ 'Lead single':[[1,'lyric','TT','Lyric on screen over a performance clip'],[2,'bts','IG','Story Q&A box about the song'],[3,'perf','IG','Reel: stripped or acoustic version'],[4,'lyric','X','Quote one line and link the song'],[5,'teaser','TT','Same song, new hook: test a different angle'],[6,'interview','LI','Who made this record: credits and one lesson learned'],[0,'fan','FB','Share playlist adds and press, thank people by name']],
+ 'Second single':[[1,'lyric','TT','Lyric meaning in 20 seconds, talking to camera'],[2,'perf','YT','Short: live take of single two'],[3,'bts','IG','Reel: how the beat or arrangement came together'],[4,'cta','X','Pre-save reminder with one new detail'],[5,'teaser','TT','Preview an album track nobody has heard'],[0,'fan','IG','Repost fan videos to Stories']],
+ 'Countdown':[[1,'teaser','TT','Track preview with the day count on screen'],[2,'lyric','IG','Lyric card carousel, one line per slide'],[3,'bts','YT','Short: making-of clip'],[4,'interview','IG','Talk to camera: what this album means'],[5,'cta','TT','Pre-save push: show the countdown'],[6,'fan','IG','Stories: fan questions answered'],[0,'teaser','X','Reveal thread: tracklist or a feature']],
+ 'Release week':[[1,'perf','TT','Performance clip of the focus track'],[2,'lyric','IG','Track-by-track carousel'],[3,'fan','TT','Stitch or duet fan reactions'],[4,'interview','YT','Short: story behind the title track'],[5,'bts','IG','Release-night photo dump'],[6,'fan','X','Favourite track poll'],[0,'perf','FB','Live stream or listening party replay']],
+ 'Sustain':[[1,'fan','TT','Stitch or duet fan videos'],[3,'lyric','IG','Lyric breakdown for a deep cut'],[5,'perf','YT','Live session clip'],[6,'interview','LI','What the rollout taught us: numbers and thank-yous']]};
+const SPECIAL=[[-56,'cta','IG','Lead single is out: cover, link in bio, pin it'],[-56,'cta','TT','Lead single out now: best-performing hook again'],[-42,'cta','IG','Album announcement: title, cover, date, pre-save'],[-42,'cta','X','Album announcement thread'],[-42,'cta','FB','Album announcement plus pre-save link'],[-28,'cta','IG','Second single out now'],[-28,'cta','YT','Premiere the visualizer for single two'],[-14,'cta','IG','Tracklist reveal'],[-7,'cta','TT','One week to go'],[-1,'cta','IG','Out tonight: countdown sticker in Stories'],[0,'cta','IG','ALBUM OUT NOW: cover, link, thank-you caption'],[0,'cta','TT','Album out now: the hook everyone already knows'],[0,'cta','X','Out now, then reply to everyone all day'],[0,'cta','YT','Premiere the official video or full visual album'],[0,'cta','FB','Out now post plus listening-party event'],[0,'interview','LI','Release-day note: the team, the credits, the story'],[1,'fan','IG','Thank-you post with fan reactions'],[7,'cta','IG','First-week recap and what comes next'],[28,'cta','IG','Tour, deluxe or video announcement']];
+const MS0=[[-84,'Masters and final track list locked','Deadline'],[-77,'Album cover and single artwork approved','Deadline'],[-77,'Split sheets signed for every track','Deadline'],[-70,'Lead single delivered to distributor and pitched','Single'],[-56,'Lead single release','Single'],[-49,'Full album delivered to distributor','Deadline'],[-42,'Album announcement and pre-save live','Release'],[-35,'Press kit and press release finished','Press'],[-28,'Second single release','Single'],[-28,'Editorial pitch for the album focus track','Deadline'],[-21,'Press and blog outreach goes out','Press'],[-14,'Tracklist reveal, Canvas and profiles updated','Content'],[-7,'Last day to pitch (hard minimum is 7 days)','Deadline'],[0,'ALBUM RELEASE','Release'],[7,'First-week results review','Release'],[14,'Music video or live session drop','Content'],[28,'Tour or next-chapter announcement','Tour'],[42,'Rollout retrospective and royalty check','Release']];
+const MS_CATS=['Release','Single','Press','Tour','Deadline','Content'],MS_ST=['To do','In progress','Done'];
+const DIST=[
+ {n:'Metadata and rights',s:'Do these first. Mismatched names and unregistered songs are the most common reason royalties go missing.',i:[
+  ['Final masters exported as WAV (16-bit / 44.1 kHz or higher), one file per track',-84],['Artist name, featured artists and track titles spelled identically everywhere',-84],
+  ['Songwriter, producer and performer credits collected for every track',-77],['Split sheet signed by every writer on every track',-77],
+  ['ISRC for each track and UPC for the release (your distributor usually assigns both)',-70],['Songs registered with your PRO (ASCAP, BMI, SESAC, or your country\'s society), with each writer\'s IPI number',-70],
+  ['Songs registered with The MLC or a publishing administrator for mechanical royalties',-70],['Recordings registered with SoundExchange for digital radio royalties',-70],
+  ['Explicit flags, genre, language, ℗ and © lines confirmed',-70],['Samples and interpolations cleared in writing',-70],
+  ['Release delivered to the distributor at least 4 weeks ahead, with the release date and pre-save set',-49],['Lyrics submitted through the distributor or Musixmatch',-42]]},
+ {n:'Spotify',s:'One song per release can be pitched to editors, only before it is live.',i:[
+  ['Spotify for Artists profile claimed and team members invited',-70],['Editorial pitch submitted in Spotify for Artists (7 days is the hard minimum, aim for 4 weeks; 500 characters)',-28],
+  ['Bio, header image, gallery photos and social links updated',-14],['Canvas loop uploaded for each single (9:16, 3–8 seconds, no audio)',-14],
+  ['Pre-save or Countdown Page link live and tested',-42],['Artist Pick set to the album; artist playlist updated',0],['Concerts and merch connected to the profile',0],['Campaign tools reviewed (Marquee, Showcase, Discovery Mode) against budget',-7]]},
+ {n:'Apple Music',s:'Pre-adds and a complete profile matter more here than a pitch form.',i:[
+  ['Apple Music for Artists profile claimed',-70],['Pre-add enabled through the distributor',-42],['Artist image and bio updated',-14],
+  ['Motion artwork delivered if your distributor supports it (1:1, 3840 × 3840, 8–35 seconds, no audio, no cuts)',-21],['Time-synced lyrics checked',-14],
+  ['Ask the distributor or label rep about Apple editorial pitching',-28],['Spatial Audio / Dolby Atmos mix delivered (optional)',-49],['Shazam result checked for every single',0]]},
+ {n:'YouTube Music',s:'Your channel is both a streaming profile and a search result.',i:[
+  ['Official Artist Channel requested (your distributor can merge the topic channel)',-42],['Channel banner, about text and links updated',-14],['Content ID choice made (skip it for leased beats or uncleared samples)',-49],
+  ['Premiere scheduled for the video or visualizer',-7],['Art tracks and official audio checked on release day',0],['Song available as a sound in Shorts',0]]},
+ {n:'Amazon Music',s:'Smaller, but voice requests and its own playlists add up.',i:[
+  ['Amazon Music for Artists profile claimed',-70],['New-release pitch submitted in Amazon Music for Artists (aim for 2+ weeks ahead)',-21],['Profile photo and bio updated',-14],['Voice test: "Alexa, play the album by the artist" returns the right record',0]]},
+ {n:'Other stores and social sound libraries',s:'Tick these off so no fan hits a dead end.',i:[
+  ['TIDAL, Deezer and Pandora artist profiles claimed',-42],['SoundCloud and Bandcamp pages updated; Bandcamp pre-order live',-42],
+  ['TikTok, Instagram and Facebook sound-library delivery switched on; TikTok clip start time chosen',-21],['One smart link built for pre-save and all stores (several tools have free plans)',-42],
+  ['Bandsintown or Songkick connected for show listings',-28],['Genius lyrics and credits added',0],['Release day: open every store link and confirm the album sits on the right artist page',0]]}];
+const ASSETS=[
+ {n:'Cover art',s:'Square, clean, and never reused between a single and the album.',i:['Album cover: 3000 × 3000 px, 1:1, JPG or PNG, RGB','No web addresses, social handles, prices or store logos on the cover','Separate cover for each single','Text-free version of the cover','Layered source file (PSD, AI or Figma)']},
+ {n:'Promotional images',s:'Enough variety that press and platforms never ask twice.',i:['Press photos: at least 3, portrait and landscape, high resolution, photographer credited','Profile image for every platform (same one everywhere)','Banners: YouTube 2560 × 1440, X 1500 × 500, Facebook cover','Feed template 1080 × 1350 (4:5) and story template 1080 × 1920 (9:16)','Announcement poster and tour or show poster']},
+ {n:'Video clips',s:'Shoot once, cut many times.',i:['Spotify Canvas per single: 9:16, 3–8 seconds, MP4, no audio, loops cleanly','Apple Music motion art: 1:1, 3840 × 3840, 8–35 seconds, no audio','Ten or more vertical teasers, 15–30 seconds each','Official video or visualizer master in 16:9','Lyric video','Raw behind-the-scenes footage bank','Caption files for anything with speech']},
+ {n:'Audio previews',s:'Every version someone might ask for.',i:['Final masters (WAV)','Instrumentals','Clean or radio edits','15, 30 and 60 second hook clips for socials','Stems or a cappellas for remixes and sync requests','Private streaming link for press and playlist curators']},
+ {n:'Press kit',s:'One link that answers every journalist and booker question.',i:['Bio in three lengths: 50, 150 and 300+ words','Press release for the album','One-sheet PDF: the record, the story, the numbers','Press photos with credits','Album credits and lyric sheet','Key links and current stats','Quotes and past press','Contact, management and booking details','Tech rider and stage plot if you play live']}];
+const PALS=[['Night drive',['#1F1A3D','#5B3FD9','#FF5C8A','#F4F0FF','#0D0B1A']],['Sun-bleached',['#C8553D','#F28F3B','#588B8B','#FFF1DC','#2D3142']],['Mono plus one',['#111111','#6B6B6B','#E63946','#F5F5F2','#000000']],['Greenroom',['#1B4332','#40916C','#D4A373','#FEFAE0','#081C15']]];
+const ROLES=['Primary','Secondary','Accent','Light','Dark'];
+const FONTS=[['Poster','Anton','Inter'],['Editorial','Playfair Display','Inter'],['Modern','Syne','Inter'],['Romantic','Cormorant Garamond','Inter'],['Studio','Space Grotesk','JetBrains Mono']];
+const TONE=[['Playful','Serious'],['Raw','Polished'],['Mysterious','Open book'],['Loud','Understated']];
+const STYLE=[['photo','Photography','Lighting, locations, colour grade, film or digital, how you are framed'],['texture','Texture and treatment','Grain, scans, paper, glitches, borders, filters'],['graphics','Graphics and symbols','Icons, shapes, handwriting, recurring motifs'],['layout','Layout rules','Where the logo sits, margins, how much text is too much']];
+const MOODS=[['m1','Analog warmth','Film grain, golden light'],['m2','After hours','Neon, city, night'],['m3','Mono minimal','Black, white, space'],['m4','Cut and paste','Zine, collage, DIY'],['m5','Quiet luxury','Deep tones, fine lines'],['m6','Dream haze','Soft, pastel, blurred']];
+const TEAM_CATS=['Team','PR','Label','Press','Playlist','Influencer','Venue'],TEAM_ST=['To contact','Contacted','In talks','Confirmed','Declined'];
+// Questionnaire: [id, type (t text, a long text, m multi, s single, mood), question, options or placeholder]
+const QS=[
+ ['You and your story',[
+  ['name','t','Your artist name exactly as it should appear in stores','Capital letters, spacing and symbols matter'],
+  ['oneline','a','Describe yourself as an artist in one sentence','The line you would want a journalist to copy'],
+  ['origin','a','Where are you from and how did the music start?',''],
+  ['fans_of','t','Three artists your fans also listen to','For fans of…'],
+  ['rollouts','a','Which album rollouts have you admired, and what did you like about them?','Links welcome'],
+  ['feel','a','What should people feel when they hear this record?',''],
+  ['offlimits','a','Anything off-limits? Topics, imagery or parts of your life to keep private','']]],
+ ['The album',[
+  ['stage','s','Where is the music right now?',['Still writing','Recording','Mixing','Mastering','Masters finished']],
+  ['tracks','t','How many tracks, and roughly how long?','For example 11 tracks, 38 minutes'],
+  ['concept','a','The story of the album in two or three sentences',''],
+  ['tracklist','a','Track list so far. Mark the singles and the one focus track','One title per line'],
+  ['collabs','a','Features, producers and other collaborators','Names and what they did'],
+  ['explicit','s','Explicit lyrics?',['None','Some tracks','Most tracks']],
+  ['video','m','Which visuals are planned or wanted?',['Official music video','Visualizer','Lyric video','Live session','Short film','Nothing yet']],
+  ['samples','s','Any samples or interpolations?',['None','Yes, all cleared','Yes, not cleared yet','Not sure']],
+  ['dateflex','s','How fixed is the release date?',['Locked','Can move a few weeks','Open, advise me']]]],
+ ['Your audience',[
+  ['listener','a','Describe your core listener','Age, where they live, what else they listen to, what they care about'],
+  ['cities','t','Top cities or countries today',''],
+  ['numbers','a','Current numbers','Spotify monthly listeners, Instagram, TikTok, YouTube, email list'],
+  ['engage','m','Where do fans actually talk back?',['Instagram','TikTok','YouTube','X / Twitter','Facebook','Discord','Email','At shows']],
+  ['fanname','t','Is there a fan name or community already?','']]],
+ ['Goals and budget',[
+  ['goals','m','Pick your top three goals for this release',['More streams','Playlist placements','Press coverage','Grow social following','Sell tickets','Sell merch or vinyl','Sync licensing','Label or manager attention','Grow the email list','Brand partnerships']],
+  ['success','a','What would make you say "that worked" ninety days after release?','Be specific: a number, a room size, a feeling'],
+  ['budget','s','Total budget for the rollout',['Under $500','$500–2,000','$2,000–5,000','$5,000–15,000','Over $15,000','Not sure yet']],
+  ['ads','s','Open to paid ads?',['Yes','A small test','No']],
+  ['hours','s','Time you can give to content each week',['Under 2 hours','2–5 hours','5–10 hours','10+ hours']],
+  ['camera','s','Comfort on camera (1 = avoid it, 5 = love it)',['1','2','3','4','5']]]],
+ ['Brand and visuals',[
+  ['logo','s','Do you have a logo or wordmark?',['Yes, and I like it','Yes, needs a refresh','No']],
+  ['colors','t','Colours you already use, and colours to avoid',''],
+  ['mood','mood','Which visual directions feel right? Pick up to two',''],
+  ['is','t','Three words your brand is',''],
+  ['isnot','t','Three words your brand is never',''],
+  ['voice','m','How do you naturally talk to fans?',['Playful','Poetic','Blunt','Mysterious','Warm','Hype','Vulnerable','Funny']],
+  ['photos','s','Photos',['Recent shoot done','Shoot is booked','Need a shoot','Only phone photos']],
+  ['cover','s','Cover art',['Finished','In progress','Need a designer','Need a concept first']],
+  ['refs','a','Links to visual references','Pinterest boards, saved posts, album covers you love']]],
+ ['Content and socials',[
+  ['handles','a','Active platforms and handles','One per line'],
+  ['willing','m','Content you are happy to make',['Talking to camera','Performance clips','Studio footage','Day in the life','Lyric breakdowns','Trends and skits','Live streams','Replies to fans','Interviews and podcasts','Longer YouTube videos']],
+  ['refuse','a','Content you will not make',''],
+  ['films','s','Who films and edits?',['I do','A friend or team member','I need you to','A mix']],
+  ['posts','s','Who presses "post"?',['I post everything','You post with access','You schedule, I approve']],
+  ['approve','s','How fast can you approve drafts?',['Same day','Within 24 hours','Two days or more']],
+  ['footage','s','Existing footage bank?',['Lots','Some','Almost none']]]],
+ ['Rights and business',[
+  ['dist','s','Distributor',['DistroKid','TuneCore','CD Baby','UnitedMasters','Symphonic','AWAL','My label handles it','None yet']],
+  ['deals','a','Any label, publisher, manager or distribution deal in place?','Who, and what they control'],
+  ['masters','s','Do you own your masters?',['Yes, fully','Shared','No','Not sure']],
+  ['pro','s','Performing rights organisation',['ASCAP','BMI','SESAC','GMR','Outside the US','None yet']],
+  ['royalty','m','Already registered with',['The MLC','SoundExchange','A publishing administrator','None of these','Not sure']],
+  ['splits','s','Signed split sheets for every track?',['All signed','Some','None yet']],
+  ['profiles','m','Artist profiles you have claimed',['Spotify for Artists','Apple Music for Artists','YouTube Official Artist Channel','Amazon Music for Artists','TikTok artist account','Bandsintown','Genius']],
+  ['web','t','Website, domain and email-list tool','']]],
+ ['Live, merch and press',[
+  ['shows','a','Shows, a release party or a tour planned?','Dates and cities if known'],
+  ['merch','m','Physical products',['Vinyl','CD','Cassette','Apparel','Posters','Nothing planned']],
+  ['wins','a','Past press, playlist or radio wins','Links help'],
+  ['pr','s','Publicist',['Have one','Want one','Doing it ourselves']],
+  ['dream','a','Dream outlets, playlists and collaborators','']]],
+ ['Working together',[
+  ['team','a','Who else is on the team, and who makes final decisions?',''],
+  ['comms','m','Best way to reach you',['Text','Email','WhatsApp','Slack or Discord','Weekly call']],
+  ['need','m','What do you most need from me?',['Brand identity','Content calendar','Making and editing content','Posting and scheduling','Distribution setup','Playlist pitching','Press outreach','Website and press kit','Ads','Project management','Not sure, tell me']],
+  ['worry','a','Your biggest worry about this release',''],
+  ['else','a','Anything else I should know?','']]]];
+
+/* ---------- state ---------- */
+function fresh(){
+  let r=addD(today(),84);r=addD(r,(5-r.getDay()+7)%7); // first Friday at least 12 weeks out
+  const s={p:{artist:'Your Artist Name',album:'Your Album Title',date:iso(r),type:'Album',genre:'',audience:'',dist:'',label:'',cat:'CAT-001',demo:true},q:{},chk:{},links:{},n:1,posts:[],
+   brand:{pal:[...PALS[0][1]],font:0,tone:[50,50,50,50],say:'',never:'',logo:''},
+   team:[{name:'Jordan Lee',role:'Manager',cat:'Team',contact:'jordan@example.com',st:'Confirmed',notes:'Signs off on budget',ex:1},{name:'Sam Ortiz',role:'Publicist',cat:'PR',contact:'sam@example.com',st:'In talks',notes:'Needs press kit by T−35',ex:1},{name:'Riley Chen',role:'Playlist curator',cat:'Playlist',contact:'@rileyplays',st:'To contact',notes:'Indie soul lists, 40k followers',ex:1}],
+   ms:MS0.map((m,i)=>({id:i+1,off:m[0],t:m[1],cat:m[2],st:0})),ui:{view:'month',plat:'',sel:iso(today())}};
+  if(today()<addD(r,-63))s.ui.sel=iso(addD(r,-56)); // open the calendar on the lead-single week, where the plan starts
+  s.n=100;genPosts(s);return s;
+}
+function genPosts(s){
+  s.posts=[];const R0=pd(s.p.date);
+  for(let o=-63;o<=28;o++){const dow=addD(R0,o).getDay();(WEEKLY[phaseOf(o)]||[]).forEach(w=>{if(w[0]===dow)s.posts.push({id:s.n++,off:o,type:w[1],pl:w[2],note:w[3],done:0})})}
+  SPECIAL.forEach(x=>s.posts.push({id:s.n++,off:x[0],type:x[1],pl:x[2],note:x[3],done:0}));
+}
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.p||!S.posts)S=fresh();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const setP=(path,v)=>{const ks=path.split('.');let o=S;while(ks.length>1){const k=ks.shift();o=o[k]??={}}o[ks[0]]=v};
+const getP=path=>path.split('.').reduce((o,k)=>o?.[k],S);
+const R=()=>pd(S.p.date),offOf=d=>Math.round((d-R())/DAY),dateOf=o=>addD(R(),o);
+const answered=v=>Array.isArray(v)?v.length>0:!!String(v??'').trim();
+const allQ=QS.flatMap(s=>s[1]);
+
+/* ---------- meters ---------- */
+function mcalc(n){
+  const cnt=(pre,groups,only)=>{let d=0,t=0;groups.forEach((g,gi)=>{if(only!==''&&+only!==gi)return;g.i.forEach((_,ii)=>{t++;if(S.chk[pre+gi+'_'+ii])d++})});return[d,t]};
+  if(n==='disc')return[allQ.filter(q=>answered(S.q[q[0]])).length,allQ.length];
+  if(n.startsWith('disc'))return[QS[+n.slice(4)][1].filter(q=>answered(S.q[q[0]])).length,QS[+n.slice(4)][1].length];
+  if(n.startsWith('dist'))return cnt('d',DIST,n.slice(4));
+  if(n.startsWith('assets'))return cnt('a',ASSETS,n.slice(6));
+  if(n==='ms')return[S.ms.filter(m=>m.st===2).length,S.ms.length];
+  if(n==='posts')return[S.posts.filter(p=>p.done).length,S.posts.length];
+  return[0,0];
+}
+const meter=(n,label)=>{const[d,t]=mcalc(n);return`<div class="meter" data-meter="${n}"><div class="mrow"><span>${esc(label)}</span><b>${d}/${t}</b></div><div class="bar"><i style="width:${t?d/t*100:0}%"></i></div></div>`};
+const refreshMeters=()=>$$('[data-meter]').forEach(el=>{const[d,t]=mcalc(el.dataset.meter);$('b',el).textContent=`${d}/${t}`;$('i',el).style.width=(t?d/t*100:0)+'%'});
+
+/* ---------- shared bits ---------- */
+const field=(k,label,type='text',ph='',hint='')=>`<label class="f">${esc(label)}${hint?` <span class="hint">${esc(hint)}</span>`:''}<input type="${type}" id="f-${k.replace(/\./g,'-')}" data-k="${k}" value="${esc(getP(k))}" placeholder="${esc(ph)}"></label>`;
+const area=(k,label,ph='')=>`<label class="f">${esc(label)}<textarea id="f-${k.replace(/\./g,'-')}" data-k="${k}" placeholder="${esc(ph)}">${esc(getP(k))}</textarea></label>`;
+const sel=(attr,opts,cur)=>`<select ${attr}>${opts.map((o,i)=>{const[v,l]=Array.isArray(o)?o:[o,o];return`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}>${esc(l)}</option>`}).join('')}</select>`;
+const head=(eyebrow,title,lede)=>`<div class="head"><div class="eyebrow">${eyebrow}</div><h2>${title}</h2><p class="muted">${lede}</p></div>`;
+const due=o=>{const d=dateOf(o),late=d<today();return`<span class="due${late?' late':''}" title="${tm(o)}">${fmt(d)}</span>`};
+function paintHead(){
+  $('#hCat').textContent=`${S.p.cat||'CAT-001'} · ${S.p.type||'Album'}${S.p.label?' · '+S.p.label:''}`;
+  $('#hTitle').innerHTML=`${esc(S.p.album||'Untitled album')} <em>by ${esc(S.p.artist||'Artist')}</em>`;
+  const o=-offOf(today());$('#hCount').textContent=o>0?`T−${o}`:o===0?'OUT NOW':`T+${-o}`;
+  $('#hPhase').textContent=`${o>0?'days to release':o===0?'release day':'days since release'} · ${phaseOf(-o)}`;
+}
+function brandVars(){const b=S.brand,f=FONTS[b.font]||FONTS[0];return b.pal.map((c,i)=>`--b${i}:${c}`).join(';')+`;--bf:'${f[1]}',sans-serif;--bt:'${f[2]}',sans-serif`}
+
+/* ---------- views ---------- */
+const V={};
+V.overview=()=>{
+  const now=offOf(today()),next=S.ms.filter(m=>m.st!==2).sort((a,b)=>a.off-b.off).slice(0,5);
+  return head('Start here','Project setup',`Fill in the basics once. The header, every due date, the content calendar and the post mockups update from these fields.`)+
+  (S.p.demo?`<div class="note"><span><b>Example project loaded.</b> Names, contacts and dates are placeholders. Replace them below, or start with empty fields.</span><button class="btn ghost sm" data-act="blank">Start blank</button></div>`:'')+
+  `<div class="grid g2"><div class="card"><h3>The release</h3><div class="grid g2">
+   ${field('p.artist','Artist name')}${field('p.album','Album title')}${field('p.date','Release date','date','','Fridays are standard')}
+   <label class="f">Release type${sel('data-k="p.type" id="f-p-type"',['Album','EP','Single','Deluxe edition','Mixtape'],S.p.type)}</label>
+   ${field('p.genre','Genre','text','Alt R&B, indie pop…')}${field('p.dist','Distributor','text','DistroKid, TuneCore…')}${field('p.label','Label','text','Self-released')}${field('p.cat','Catalog number')}</div>
+   ${area('p.audience','Target audience','Who is this record for? Age, places, the artists they already love')}</div>
+  <div class="card"><h3>Readiness</h3>${meter('disc','Discovery questions answered')}${meter('dist','Distribution checklist')}${meter('assets','Assets delivered')}${meter('ms','Milestones done')}${meter('posts','Planned posts published')}
+   <h3>Next up</h3><div>${next.map(m=>`<div class="check"><span class="tag ${m.off<now?'bad':m.off-now<=7?'warn':''}">${tm(m.off)}</span><div class="tx">${esc(m.t)}</div><span class="due">${fmt(dateOf(m.off))}</span></div>`).join('')||'<p class="muted">Every milestone is done.</p>'}</div></div></div>
+  <div class="card"><h3>How this works</h3><ol class="steps"><li><b>Project setup</b> (this page): the artist confirms the basics.</li><li><b>Discovery</b>: the artist answers the questionnaire, then presses "Copy my answers" and sends them back.</li><li><b>Brand, Calendar, Distribution, Assets, Team, Milestones</b>: the working plan, pre-filled from a 12-week rollout and adjusted as answers come in.</li><li><b>Guide</b>: how to use each section, how to load answers, and the research behind the dates.</li></ol></div>`;
+};
+V.discovery=()=>head('Questionnaire','Discovery',`Everything needed to build the brand, the content plan and the release schedule. Short answers are fine. Skip what you do not know yet. Answers save in this browser as you type.`)+
+ `<div class="card">${meter('disc','Questions answered')}<p class="small muted">Never type a password here. Account access is handled with team invites from each platform.</p></div>`+
+ QS.map((s,si)=>`<div class="card"><div class="row spread"><h3>${esc(s[0])}</h3><div style="min-width:150px">${meter('disc'+si,'Answered')}</div></div><div class="grid g2">${s[1].map(q=>{
+   const[id,t,label,o]=q,v=S.q[id];
+   if(t==='t')return`<label class="f">${esc(label)}<input type="text" id="q-${id}" data-k="q.${id}" value="${esc(v)}" placeholder="${esc(o)}"></label>`;
+   if(t==='a')return`<label class="f">${esc(label)}<textarea id="q-${id}" data-k="q.${id}" placeholder="${esc(o)}">${esc(v)}</textarea></label>`;
+   if(t==='mood')return`<div class="q" style="grid-column:1/-1"><b>${esc(label)}</b><div class="moods">${MOODS.map(m=>`<button class="mood ${m[0]}" data-act="chip" data-m="1" data-q="${id}" data-v="${m[1]}" aria-pressed="${(v||[]).includes(m[1])}"><span>${m[1]}</span><small>${m[2]}</small></button>`).join('')}</div></div>`;
+   return`<div class="q"><b>${esc(label)}</b><div class="chips">${o.map(x=>`<button class="chip" data-act="chip" ${t==='m'?'data-m="1"':''} data-q="${id}" data-v="${esc(x)}" aria-pressed="${t==='m'?(v||[]).includes(x):v===x}">${esc(x)}</button>`).join('')}</div></div>`}).join('')}</div></div>`).join('')+
+ `<div class="card"><h3>Send your answers</h3><p class="muted">Press the button, then paste into a text, email or message. Nothing is sent automatically.</p><div class="row"><button class="btn" data-act="copy">Copy my answers</button><span class="small muted" id="copyMsg" role="status"></span></div><pre class="out" id="out" tabindex="0">${esc(exportText())}</pre></div>`;
+V.distribution=()=>head('Stores and rights','Distribution checklist',`Dates count back from the release date. Red dates have passed. Platform rules change, so confirm specifics in each platform's own artist tools before you deliver files.`)+
+ `<div class="card">${meter('dist','All distribution tasks')}</div><div class="grid g2">`+DIST.map((g,gi)=>`<div class="card"><div><h3>${esc(g.n)}</h3><p class="small muted">${esc(g.s)}</p></div>${meter('dist'+gi,'Done')}<div>${g.i.map((it,ii)=>`<label class="check"><input type="checkbox" id="d${gi}_${ii}" data-c="d${gi}_${ii}"${S.chk['d'+gi+'_'+ii]?' checked':''}><span class="tx">${esc(it[0])}</span>${due(it[1])}</label>`).join('')}</div></div>`).join('')+`</div>`;
+V.calendar=()=>{
+  const ui=S.ui,selD=pd(ui.sel),posts=S.posts.filter(p=>!ui.plat||p.pl===ui.plat),by={};posts.forEach(p=>(by[p.off]||=[]).push(p));
+  const msBy={};S.ms.forEach(m=>(msBy[m.off]||=[]).push(m));
+  const postRow=p=>`<div class="post${p.done?' done':''}"><input type="checkbox" aria-label="Published" data-pd="${p.id}"${p.done?' checked':''}><div class="tx"><span class="tag"><i class="dot t-${p.type}"></i>${TYPES[p.type]}</span> <span class="tag">${PLATS[p.pl]}</span><div>${esc(p.note)}</div></div><button class="btn ghost sm" data-act="delpost" data-id="${p.id}" aria-label="Delete post">✕</button></div>`;
+  let body,title;
+  if(ui.view==='month'){
+    const first=new Date(selD.getFullYear(),selD.getMonth(),1),start=addD(first,-first.getDay());title=fmt(first,{month:'long',year:'numeric'});
+    const weeks=Math.ceil((first.getDay()+new Date(first.getFullYear(),first.getMonth()+1,0).getDate())/7);
+    body=`<div class="cal">${['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d=>`<div class="dow">${d}</div>`).join('')}${Array.from({length:weeks*7},(_,i)=>{
+      const d=addD(start,i),o=offOf(d),ps=by[o]||[],k=iso(d);
+      return`<button class="day${d.getMonth()!==first.getMonth()?' out':''}${k===iso(today())?' today':''}${o===0?' rel':''}${k===ui.sel?' sel':''}" data-act="day" data-d="${k}" aria-label="${fmt(d)}, ${ps.length} posts"><span class="n">${d.getDate()}</span>${(msBy[o]||[]).slice(0,1).map(m=>`<span class="ms">◆ ${esc(m.t)}</span>`).join('')}<span class="ps">${ps.slice(0,3).map(p=>`<span class="p${p.done?' done':''}"><i class="dot t-${p.type}"></i><span>${p.pl} · ${TYPES[p.type]}</span></span>`).join('')}</span>${ps.length>3?`<span class="p muted">+${ps.length-3}</span>`:''}</button>`}).join('')}</div>`;
+  }else{
+    const start=addD(selD,-selD.getDay());title=`Week of ${fmt(start,{month:'long',day:'numeric',year:'numeric'})}`;
+    body=`<div class="wk">${Array.from({length:7},(_,i)=>{const d=addD(start,i),o=offOf(d),ps=by[o]||[];return`<div><div class="row spread"><b>${fmt(d,{weekday:'long',month:'short',day:'numeric'})}</b><span class="row"><span class="tag">${tm(o)} · ${phaseOf(o)}</span><button class="btn ghost sm" data-act="day" data-d="${iso(d)}">${iso(d)===ui.sel?'Selected':'Select'}</button></span></div>${(msBy[o]||[]).map(m=>`<div class="small" style="color:var(--accent);font-weight:600">◆ ${esc(m.t)}</div>`).join('')}${ps.map(postRow).join('')||'<p class="small muted">Nothing planned.</p>'}</div>`}).join('')}</div>`;
+  }
+  const so=offOf(selD),sp=by[so]||[];
+  return head('Content plan','Content calendar',`A full plan from nine weeks before release to four weeks after, built from the release date. Every post can be ticked, deleted or replaced, and the whole plan moves if the date moves.`)+
+  `<div class="card"><div class="row spread"><div class="row"><button class="btn ghost sm" data-act="calnav" data-n="-1" aria-label="Previous">←</button><h3 style="min-width:11ch">${title}</h3><button class="btn ghost sm" data-act="calnav" data-n="1" aria-label="Next">→</button><button class="btn ghost sm" data-act="caljump" data-d="${iso(today())}">Today</button><button class="btn ghost sm" data-act="caljump" data-d="${S.p.date}">Release day</button></div>
+   <div class="row"><button class="btn ghost sm" data-act="calview" data-v="month" aria-pressed="${ui.view==='month'}">Month</button><button class="btn ghost sm" data-act="calview" data-v="week" aria-pressed="${ui.view==='week'}">Week</button></div></div>
+   <div class="chips"><button class="chip" data-act="calplat" data-v="" aria-pressed="${!ui.plat}">All platforms</button>${Object.entries(PLATS).map(([k,l])=>`<button class="chip" data-act="calplat" data-v="${k}" aria-pressed="${ui.plat===k}">${l}</button>`).join('')}</div>
+   ${body}<div class="row small">${Object.entries(TYPES).map(([k,l])=>`<span class="row" style="gap:5px"><i class="dot t-${k}"></i>${l}</span>`).join('')}</div></div>
+  <div class="grid g2"><div class="card"><div class="row spread"><h3>${fmt(selD,{weekday:'long',month:'long',day:'numeric'})}</h3><span class="tag">${tm(so)} · ${phaseOf(so)}</span></div><div>${sp.map(postRow).join('')||'<p class="muted">No posts on this day yet.</p>'}</div>
+   <div class="grid g2"><label class="f">Post type${sel('id="npType"',Object.entries(TYPES),'teaser')}</label><label class="f">Platform${sel('id="npPlat"',Object.entries(PLATS),ui.plat||'IG')}</label></div>
+   <label class="f">Scheduling note<input type="text" id="npNote" placeholder="What is the post, and what is the hook?"></label><div class="row"><button class="btn" data-act="addpost">Add post to this day</button><button class="btn ghost" data-act="regen" id="regen">Rebuild plan from template</button></div></div>
+  <div class="card"><h3>Platform playbook</h3><p class="small muted">Starting points from current artist-marketing guides. Adjust to what the audience data shows after two weeks.</p><div>${PLAT_TIPS.map(t=>`<div class="check"><div class="tx"><b>${PLATS[t[0]]}</b> <span class="tag">${t[1]}</span><div class="small">${t[2]}.</div><div class="small muted">${t[3]}</div></div></div>`).join('')}</div></div></div>`;
+};
+V.brand=()=>{
+  const b=S.brand,a=esc(S.p.artist||'Artist'),al=esc(S.p.album||'Album'),rd=R(),dShort=`${String(rd.getMonth()+1).padStart(2,'0')}.${String(rd.getDate()).padStart(2,'0')}`,dLong=fmt(rd,{month:'long',day:'numeric'});
+  const mocks=[['a1','teaser','IG','<span class="sm">Something is coming</span><span class="big">'+dShort+'</span><span class="sm">'+a+'</span>',`${dShort}. That is all I can say for now.`],
+   ['a2','lyric','TT','<span class="sm">'+al+' · Track 03</span><span class="big">“Put your best lyric line right here”</span><span class="sm">'+a+'</span>','Wrote this line at 3am and almost cut it. Which line is yours?'],
+   ['a3','bts','IG','<span class="sm">Studio diary · 04</span><span class="big">The take that made the record</span><span class="pill">Swipe →</span>','Day 41. We scrapped the whole chorus and started over. Worth it.'],
+   ['a4','cta','IG','<span class="sm">New album</span><span class="big">'+al+'</span><span class="pill">Out '+dLong+' · Pre-save</span>',`${S.p.album||'The album'} is out ${dLong}. Pre-save at the link in my bio. It tells the stores you want it.`],
+   ['a5','interview','LI','<span class="sm">In conversation</span><span class="big">“Why I made this record now”</span><span class="sm">'+a+' on '+al+'</span>','Twelve people made this album with me. Here is what each of them did, and what I learned.'],
+   ['a6','perf','YT','<span class="sm">Live session</span><span class="big">One take. No edits.</span><span class="pill">▶ Watch</span>',`${S.p.artist||'Artist'} – focus track (Live Session). Filmed in one take.`]];
+  return head('Identity','Brand identity',`Placeholders for the logo, palette, type, voice and visual style. Change anything and the brand board and the post mockups below redraw with it.`)+
+  `<div class="grid g2"><div class="card bb" id="bb1" style="${brandVars()}"><div class="board"><div class="row"><div class="logo">${b.logo?`<img src="${b.logo}" alt="Logo">`:'Logo goes here'}</div><div style="flex:1;min-width:0"><div class="nm">${a}</div><div>${al}</div></div></div><div class="strip">${b.pal.map((c,i)=>`<i style="background:var(--b${i})"></i>`).join('')}</div><div class="small">Headings in ${FONTS[b.font][1]}, text in ${FONTS[b.font][2]}</div></div>
+    <label class="f">Logo file <span class="hint">PNG or SVG with a transparent background works best</span><input type="file" id="logoFile" accept="image/*"></label>
+    <div>${['Primary logo','Icon or monogram for profile pictures','One-colour version for dark and light backgrounds'].map((t,i)=>`<label class="check"><input type="checkbox" id="lg${i}" data-c="lg${i}"${S.chk['lg'+i]?' checked':''}><span class="tx">${t}</span></label>`).join('')}</div></div>
+   <div class="card"><h3>Colour palette</h3><div class="row">${b.pal.map((c,i)=>`<label class="sw"><input type="color" id="pal${i}" data-k="brand.pal.${i}" value="${esc(c)}">${ROLES[i]}<span class="mono muted" data-hex="${i}">${esc(c)}</span></label>`).join('')}</div>
+    <div class="chips">${PALS.map((p,i)=>`<button class="chip" data-act="pal" data-i="${i}">${p[0]}</button>`).join('')}</div>
+    <h3>Typography</h3><div class="chips">${FONTS.map((f,i)=>`<button class="chip" data-act="font" data-i="${i}" aria-pressed="${b.font===i}" style="font-family:'${f[1]}'">${f[0]} · ${f[1]}</button>`).join('')}</div>
+    <p class="small muted">All five pairings are free Google Fonts. Swap in the artist's own typeface once chosen.</p></div></div>
+  <div class="grid g2"><div class="card"><h3>Tone of voice</h3>${TONE.map((t,i)=>`<div class="tone"><span>${t[0]}</span><input type="range" min="0" max="100" id="tone${i}" data-k="brand.tone.${i}" value="${esc(b.tone[i])}" aria-label="${t[0]} to ${t[1]}"><span>${t[1]}</span></div>`).join('')}
+    ${area('brand.say','Words and phrases we use','How the artist actually talks: greetings, sign-offs, slang, emoji or none')}${area('brand.never','Words and phrases we never use','Anything that sounds like a press release or a different artist')}</div>
+   <div class="card"><h3>Visual style guide</h3>${STYLE.map(s=>area('brand.'+s[0],s[1],s[2])).join('')}</div></div>
+  <div class="card bb" id="bb2" style="${brandVars()}"><div><h3>Post mockups in this brand</h3><p class="small muted">Six example posts with example captions. They use the palette and type above, so they double as a quick test of the identity.</p></div>
+   <div class="mocks">${mocks.map(m=>`<div class="mock"><div class="art ${m[0]}">${m[3]}</div><div class="row"><span class="tag"><i class="dot t-${m[1]}"></i>${TYPES[m[1]]}</span><span class="tag">${PLATS[m[2]]}</span></div><div class="cap">${esc(m[4])}</div></div>`).join('')}</div></div>`;
+};
+V.assets=()=>{const slug=s=>String(s||'').replace(/[^A-Za-z0-9]+/g,'')||'Name';
+  return head('Files','Media asset library',`One folder per asset type. Paste the shared-folder link (Google Drive, Dropbox or similar) and tick each file off as it lands. Files stay in your own storage, and this page tracks them.`)+
+  `<div class="card">${meter('assets','All assets delivered')}<p class="small">File naming: <span class="mono">${esc(slug(S.p.artist))}_${esc(slug(S.p.album))}_AssetType_Size_v01.ext</span> <span class="muted">for example</span> <span class="mono">${esc(slug(S.p.artist))}_${esc(slug(S.p.album))}_Cover_3000x3000_v03.jpg</span></p></div><div class="grid g2">`+
+  ASSETS.map((f,fi)=>`<div class="card"><div><h3>${esc(f.n)}</h3><p class="small muted">${esc(f.s)}</p></div>${meter('assets'+fi,'Delivered')}<label class="f">Folder link<input type="url" id="lk${fi}" data-k="links.${fi}" value="${esc(S.links[fi])}" placeholder="https://drive.google.com/…"></label><div>${f.i.map((t,ii)=>`<label class="check"><input type="checkbox" id="a${fi}_${ii}" data-c="a${fi}_${ii}"${S.chk['a'+fi+'_'+ii]?' checked':''}><span class="tx">${esc(t)}</span></label>`).join('')}</div></div>`).join('')+`</div>`;
+};
+V.team=()=>head('People','Contact and collaboration tracker',`Team members, publicists, label contacts, press, playlist curators and creators in one list. Rows marked Example are placeholders.`)+
+ `<div class="card"><div class="scroll"><table><thead><tr><th>Name</th><th>Role</th><th>Group</th><th>Contact</th><th>Status</th><th>Notes</th><th></th></tr></thead><tbody>${S.team.map((r,i)=>`<tr>
+  <td><input type="text" id="tm${i}n" data-k="team.${i}.name" value="${esc(r.name)}" aria-label="Name">${r.ex?'<span class="tag warn">Example</span>':''}</td><td><input type="text" id="tm${i}r" data-k="team.${i}.role" value="${esc(r.role)}" aria-label="Role"></td>
+  <td>${sel(`data-k="team.${i}.cat" id="tm${i}c" aria-label="Group"`,TEAM_CATS,r.cat)}</td><td><input type="text" id="tm${i}e" data-k="team.${i}.contact" value="${esc(r.contact)}" aria-label="Contact"></td>
+  <td>${sel(`data-k="team.${i}.st" id="tm${i}s" aria-label="Status"`,TEAM_ST,r.st)}</td><td><input type="text" id="tm${i}o" data-k="team.${i}.notes" value="${esc(r.notes)}" aria-label="Notes"></td>
+  <td><button class="btn ghost sm" data-act="delteam" data-i="${i}" aria-label="Delete row">✕</button></td></tr>`).join('')}</tbody></table></div>
+  <div class="row"><button class="btn" data-act="addteam">Add contact</button><span class="small muted">${S.team.length} contacts · ${S.team.filter(r=>r.st==='Confirmed').length} confirmed</span></div></div>`;
+V.milestones=()=>{const now=offOf(today());
+  return head('Key dates','Milestone tracker',`Single drops, press deadlines, the release and what follows. Each date is stored as days before or after release, so moving the release date moves everything with it.`)+
+  `<div class="card">${meter('ms','Milestones done')}<div class="tl">${[...S.ms].sort((a,b)=>a.off-b.off).map(m=>`<div class="m${m.st!==2&&m.off>=now&&m.off-now<=7?' now':''}"><div class="t">${tm(m.off)}</div><div class="f2">
+   <input type="text" id="ms${m.id}t" data-ms="${m.id}" data-f="t" value="${esc(m.t)}" aria-label="Milestone">
+   <input type="date" id="ms${m.id}d" data-ms="${m.id}" data-f="date" value="${iso(dateOf(m.off))}" aria-label="Date">
+   ${sel(`data-ms="${m.id}" data-f="cat" id="ms${m.id}c" aria-label="Type"`,MS_CATS,m.cat)}${sel(`data-ms="${m.id}" data-f="st" id="ms${m.id}s" aria-label="Status"`,MS_ST.map((s,i)=>[i,s]),m.st)}
+   <button class="btn ghost sm" data-act="delms" data-id="${m.id}" aria-label="Delete milestone">✕</button></div></div>`).join('')}</div>
+   <div class="row"><button class="btn" data-act="addms">Add milestone</button></div></div>`;
+};
+V.guide=()=>head('User guide','How to use Album Launch HQ',`A short walkthrough of each section, how answers travel between the artist and the manager, and where the dates and specs come from.`)+
+ `<div class="grid g2"><div class="card"><h3>Section by section</h3><ol class="steps">
+  <li><b>Overview.</b> Enter artist, album and release date. Every due date and the countdown derive from the release date.</li>
+  <li><b>Discovery.</b> The artist answers what they can. Tap chips to choose, type short answers, pick visual directions. "Copy my answers" produces a readable summary plus a data block.</li>
+  <li><b>Distribution.</b> Work top to bottom. Metadata and rights come first because store profiles cannot fix a missing registration.</li>
+  <li><b>Calendar.</b> Switch between month and week, filter by platform, click a day to add or tick posts. "Rebuild plan" restores the template.</li>
+  <li><b>Brand.</b> Upload the logo, set five colours, choose a type pairing, slide the tone scales. The mockups show the result.</li>
+  <li><b>Assets.</b> Paste one shared-folder link per asset type and tick files as they arrive.</li>
+  <li><b>Team.</b> One row per person. Use Status to see who still needs a first message.</li>
+  <li><b>Milestones.</b> Edit titles and dates, set status, add your own.</li></ol></div>
+ <div class="card"><h3>Load answers someone sent you</h3><p class="small muted">Paste the full text the artist copied from Discovery. Their project details, answers and brand choices replace the ones in this browser. Your checklists, calendar and contacts stay.</p>
+  <textarea id="imp" aria-label="Pasted answers" placeholder="Paste here…"></textarea><div class="row"><button class="btn" data-act="import">Load answers</button><span class="small muted" id="impMsg" role="status"></span></div>
+  <h3>Where data lives</h3><p class="small">Everything saves in the browser you are using. Nothing uploads anywhere. Two people opening the same link each see their own copy, which is why answers travel by copy and paste.</p>
+  <h3>Start over</h3><div class="row"><button class="btn ghost" data-act="reset" id="reset">Erase everything in this browser</button></div></div></div>
+ <div class="card"><h3>Research behind the plan</h3><ul class="plain small">
+  <li><b>Pitch window.</b> Spotify editorial pitches must go in at least 7 days before release, one song per release, 500 characters; guides recommend 2–6 weeks. <a href="https://www.hypebot.com/the-2026-guide-for-pitching-spotify-editorial-playlists/" target="_blank" rel="noopener">Hypebot</a>, <a href="https://routenote.com/blog/playlist-pitching-in-2026-what-artists-need-to-know/" target="_blank" rel="noopener">RouteNote</a>, <a href="https://orphiq.com/resources/spotify-submission-timeline" target="_blank" rel="noopener">Orphiq</a></li>
+  <li><b>Rollout shape.</b> A 10–12 week plan with a lead single 6–8 weeks out, a second about 4 weeks out, and no more than four singles before the album. Singles need their own artwork. <a href="https://orphiq.com/resources/album-release-plan" target="_blank" rel="noopener">Orphiq</a>, <a href="https://blog.symphonic.com/release-strategies-for-independent-artists-waterfall-vs-traditional-vs-singles/" target="_blank" rel="noopener">Symphonic</a>, <a href="https://playlistsupply.com/blog/singles-vs-albums-strategy-2026/" target="_blank" rel="noopener">PlaylistSupply</a></li>
+  <li><b>Artwork and motion specs.</b> 3000 × 3000 cover; Canvas 9:16, 3–8 seconds; Apple motion art 3840 × 3840, 8–35 seconds. <a href="https://routenote.com/radar/music-artwork-sizes-for-spotify-apple-music-youtube-and-social-platforms/" target="_blank" rel="noopener">RouteNote</a>, <a href="https://www.emubands.com/faqs/what-are-the-tech-specifications-for-apple-music-album-motion-artwork/" target="_blank" rel="noopener">EmuBands</a>, <a href="https://orphiq.com/resources/album-artwork-guidelines" target="_blank" rel="noopener">Orphiq</a></li>
+  <li><b>Rights and metadata.</b> ISRC per recording, UPC per release, split sheets before release, and separate registrations for PRO, The MLC and SoundExchange. <a href="https://www.hypebot.com/the-royalty-registration-checklist/" target="_blank" rel="noopener">Hypebot</a>, <a href="https://labelgrid.com/blog/content-distribution/your-metadata-decides-how-much-royalty-money-you-actually-collect/" target="_blank" rel="noopener">LabelGrid</a>, <a href="https://orphiq.com/resources/music-release-checklist" target="_blank" rel="noopener">Orphiq</a></li>
+  <li><b>Social cadence.</b> Three to seven short videos a week, 15–30 seconds, TikTok for discovery and Instagram for conversion. <a href="https://www.socialchamp.com/blog/social-media-for-musicians/" target="_blank" rel="noopener">Social Champ</a>, <a href="https://orphiq.com/resources/social-media-strategy-musicians" target="_blank" rel="noopener">Orphiq</a>, <a href="https://identitymusic.com/blog/instagram-vs-tiktok-vs-youtube-short-form-video-for-musicians-in-2026" target="_blank" rel="noopener">Identity Music</a></li>
+  <li><b>Press kit.</b> Bio, photos, music, video, press quotes, stats and contact in one link. <a href="https://www.hypebot.com/hypebot/2025/08/electronic-press-kits-for-musicians-an-epk-checklist-for-musicians.html" target="_blank" rel="noopener">Hypebot</a>, <a href="https://booking-agent.io/blog/what-is-an-epk/" target="_blank" rel="noopener">Booking Agent</a></li></ul>
+  <p class="small muted">These are secondary sources, mostly distributor and marketing guides. Treat the numbers as starting points and confirm specs in each platform's own artist tools.</p></div>`;
+
+/* ---------- export / import ---------- */
+function exportText(){
+  const L=[`ALBUM LAUNCH DISCOVERY`,`${S.p.artist} — ${S.p.album} (${S.p.type}), release ${S.p.date}`,`Genre: ${S.p.genre||'—'} | Distributor: ${S.p.dist||'—'} | Label: ${S.p.label||'—'}`,`Audience: ${S.p.audience||'—'}`];
+  QS.forEach(s=>{const a=s[1].filter(q=>answered(S.q[q[0]]));if(!a.length)return;L.push('',s[0].toUpperCase());a.forEach(q=>{const v=S.q[q[0]];L.push(`• ${q[2]}`,`  ${Array.isArray(v)?v.join(', '):v}`)})});
+  const b=S.brand;L.push('','BRAND',`• Palette: ${b.pal.join(' ')}`,`• Type: ${FONTS[b.font][1]} + ${FONTS[b.font][2]}`,`• Tone: ${TONE.map((t,i)=>`${t[0]}/${t[1]} ${b.tone[i]}`).join(', ')}`);
+  const{logo,...bb}=b;L.push('','---DATA---',JSON.stringify({p:S.p,q:S.q,brand:bb}));return L.join('\n');
+}
+
+/* ---------- router and events ---------- */
+let view='overview';
+function render(){
+  const h=location.hash.slice(1);view=V[h]?h:'overview';
+  $('#nav').innerHTML=TABS.map(t=>`<a href="#${t[0]}"${t[0]===view?' aria-current="page"':''}>${t[1]}</a>`).join('');
+  $('#main').innerHTML=V[view]();paintHead();
+}
+const rerender=()=>{const y=scrollY;save();render();scrollTo(0,y)};
+addEventListener('hashchange',()=>{render();scrollTo(0,0)});
+document.addEventListener('input',e=>{
+  const t=e.target,k=t.dataset.k;if(!k)return;
+  setP(k,t.type==='range'?+t.value:t.value);save();
+  if(k.startsWith('p.')){if(k!=='p.date')S.p.demo=S.p.demo&&false;paintHead()}
+  if(k.startsWith('q.')){refreshMeters();const o=$('#out');if(o)o.textContent=exportText()}
+  if(k.startsWith('brand.pal')){$$('.bb').forEach(el=>el.style.cssText=brandVars());const hx=$(`[data-hex="${k.split('.')[2]}"]`);if(hx)hx.textContent=t.value}
+});
+document.addEventListener('change',e=>{
+  const t=e.target,d=t.dataset;
+  if(d.c){S.chk[d.c]=t.checked;save();refreshMeters()}
+  else if(d.pd){const p=S.posts.find(p=>p.id==d.pd);if(p)p.done=t.checked?1:0;rerender()}
+  else if(d.ms){const m=S.ms.find(m=>m.id==d.ms);if(!m)return;if(d.f==='date'){if(t.value)m.off=offOf(pd(t.value))}else if(d.f==='st')m.st=+t.value;else m[d.f]=t.value;rerender()}
+  else if(d.k==='p.date'){if(!t.value){S.p.date=iso(addD(today(),84))}rerender()}
+  else if(d.k&&d.k.startsWith('team.')&&t.tagName==='SELECT')rerender();
+  else if(t.id==='logoFile'&&t.files[0]){const fr=new FileReader();fr.onload=()=>{S.brand.logo=fr.result;save();render()};fr.readAsDataURL(t.files[0])}
+});
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;const d=t.dataset,ui=S.ui;
+  switch(d.act){
+   case'chip':{const q=d.q,v=d.v;if(d.m){const a=S.q[q]||(S.q[q]=[]),i=a.indexOf(v);i<0?a.push(v):a.splice(i,1);t.setAttribute('aria-pressed',i<0)}else{const same=S.q[q]===v;S.q[q]=same?'':v;$$(`[data-act="chip"][data-q="${q}"]`).forEach(b=>b.setAttribute('aria-pressed',!same&&b.dataset.v===v))}
+     save();refreshMeters();const o=$('#out');if(o)o.textContent=exportText();break}
+   case'copy':{const txt=exportText(),msg=$('#copyMsg'),fb=()=>{const r=document.createRange();r.selectNodeContents($('#out'));const s=getSelection();s.removeAllRanges();s.addRange(r);msg.textContent='Copy was blocked here. The text is selected: press Ctrl or Cmd + C.'};
+     try{navigator.clipboard.writeText(txt).then(()=>msg.textContent='Copied. Paste it into a message.',fb)}catch(x){fb()}break}
+   case'import':{const raw=$('#imp').value,i=raw.indexOf('---DATA---'),msg=$('#impMsg');try{const o=JSON.parse(raw.slice(i<0?0:i+10));if(!o.p)throw 0;S.p={...S.p,...o.p};S.q=o.q||{};S.brand={...S.brand,...(o.brand||{})};save();paintHead();msg.textContent=`Loaded answers for ${S.p.artist}.`}catch(x){msg.textContent='That text has no data block. Paste everything the artist copied, including the last line.'}break}
+   case'blank':S.p={...S.p,artist:'',album:'',cat:'',demo:false};S.team=S.team.filter(r=>!r.ex);rerender();break;
+   case'reset':if(t.dataset.arm){try{localStorage.removeItem(KEY)}catch(x){}S=fresh();location.hash='overview';render()}else{t.dataset.arm=1;t.textContent='Press again to erase everything'}break;
+   case'day':ui.sel=d.d;rerender();break;
+   case'calview':ui.view=d.v;rerender();break;
+   case'calplat':ui.plat=d.v;rerender();break;
+   case'caljump':ui.sel=d.d;rerender();break;
+   case'calnav':{const s=pd(ui.sel);ui.sel=iso(ui.view==='month'?new Date(s.getFullYear(),s.getMonth()+ +d.n,1):addD(s,7*d.n));rerender();break}
+   case'addpost':{const note=$('#npNote').value.trim();S.posts.push({id:S.n++,off:offOf(pd(ui.sel)),type:$('#npType').value,pl:$('#npPlat').value,note:note||TYPES[$('#npType').value],done:0});rerender();break}
+   case'delpost':S.posts=S.posts.filter(p=>p.id!=d.id);rerender();break;
+   case'regen':if(t.dataset.arm){genPosts(S);rerender()}else{t.dataset.arm=1;t.textContent='Press again: replaces all posts'}break;
+   case'pal':S.brand.pal=[...PALS[d.i][1]];rerender();break;
+   case'font':S.brand.font=+d.i;rerender();break;
+   case'addteam':S.team.push({name:'',role:'',cat:'Team',contact:'',st:'To contact',notes:''});rerender();break;
+   case'delteam':S.team.splice(+d.i,1);rerender();break;
+   case'addms':S.ms.push({id:S.n++,off:offOf(today()),t:'New milestone',cat:'Deadline',st:0});rerender();break;
+   case'delms':S.ms=S.ms.filter(m=>m.id!=d.id);rerender();break;
+  }
+});
+render();
+</script>
