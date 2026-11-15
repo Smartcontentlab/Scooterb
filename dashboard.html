@@ -165,12 +165,24 @@ td input,td select{padding:6px 8px}
 .tl .f2{display:grid;grid-template-columns:minmax(0,2.4fr) repeat(3,minmax(0,1fr)) auto;gap:6px}
 @media (max-width:760px){.tl .f2{grid-template-columns:repeat(2,minmax(0,1fr))}.tl .f2>:first-child{grid-column:1/-1}}
 pre.out{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:10px;max-height:240px;overflow:auto;font:400 .78rem/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.sync{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:600 .7rem var(--mono);letter-spacing:.04em;color:var(--on-brand-muted)}
+.sync::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--on-brand-muted)}
+.sync[data-s="live"]::before{background:var(--ok)}.sync[data-s="saving"]::before,.sync[data-s="loading"]::before{background:var(--warn)}.sync[data-s="ro"]::before,.sync[data-s="off"]::before{background:var(--bad)}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px 16px;text-align:center;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;background:var(--bg)}
+.drop.over{border-color:var(--accent);background:var(--sunk)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.pins{columns:4 220px;column-gap:var(--gap)}
+.pin{break-inside:avoid;margin-bottom:var(--gap);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.pin img,.pin video{display:block;width:100%;background:var(--sunk)}
+.pin .lk{padding:18px 12px;background:var(--sunk);overflow-wrap:anywhere;font-weight:600}
+.pin .bd{padding:10px;display:flex;flex-direction:column;gap:8px}
+.pin .love[aria-pressed="true"]{background:var(--t-lyric);border-color:var(--t-lyric);color:#fff}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
 <header class="top"><div class="wrap">
   <div class="disc" aria-hidden="true"><i></i></div>
-  <div class="id"><div class="eyebrow" id="hCat"></div><h1 id="hTitle"></h1></div>
+  <div class="id"><div class="eyebrow" id="hCat"></div><h1 id="hTitle"></h1><div class="sync" id="hSync" data-s="local" role="status">Saved in this browser only</div></div>
   <div class="count"><b id="hCount"></b><span id="hPhase"></span></div>
 </div></header>
 <nav aria-label="Sections"><div class="wrap" id="nav"></div></nav>
@@ -188,7 +200,7 @@ const fmt=(d,o={month:'short',day:'numeric'})=>d.toLocaleDateString('en-US',o);
 const tm=o=>o===0?'T-0':o<0?`T−${-o}`:`T+${o}`;
 
 /* ---------- content (edit these arrays to adapt the template) ---------- */
-const TABS=[['overview','Overview'],['discovery','Discovery'],['distribution','Distribution'],['calendar','Calendar'],['brand','Brand'],['assets','Assets'],['team','Team'],['milestones','Milestones'],['guide','Guide']];
+const TABS=[['overview','Overview'],['discovery','Discovery'],['inspo','Inspo'],['distribution','Distribution'],['calendar','Calendar'],['brand','Brand'],['assets','Assets'],['team','Team'],['milestones','Milestones'],['guide','Guide']];
 const TYPES={teaser:'Teaser',lyric:'Lyric snippet',bts:'Behind the scenes',interview:'Interview / talk',perf:'Performance',cta:'Announcement',fan:'Fan / community'};
 const PLATS={IG:'Instagram',TT:'TikTok',X:'X / Twitter',FB:'Facebook',LI:'LinkedIn',YT:'YouTube'};
 const PLAT_TIPS=[
@@ -247,6 +259,7 @@ const FONTS=[['Poster','Anton','Inter'],['Editorial','Playfair Display','Inter']
 const TONE=[['Playful','Serious'],['Raw','Polished'],['Mysterious','Open book'],['Loud','Understated']];
 const STYLE=[['photo','Photography','Lighting, locations, colour grade, film or digital, how you are framed'],['texture','Texture and treatment','Grain, scans, paper, glitches, borders, filters'],['graphics','Graphics and symbols','Icons, shapes, handwriting, recurring motifs'],['layout','Layout rules','Where the logo sits, margins, how much text is too much']];
 const MOODS=[['m1','Analog warmth','Film grain, golden light'],['m2','After hours','Neon, city, night'],['m3','Mono minimal','Black, white, space'],['m4','Cut and paste','Zine, collage, DIY'],['m5','Quiet luxury','Deep tones, fine lines'],['m6','Dream haze','Soft, pastel, blurred']];
+const INSPO_CATS=['Cover art','Photography','Video','Styling','Typography','Colour','Live and stage','Other'];
 const TEAM_CATS=['Team','PR','Label','Press','Playlist','Influencer','Venue'],TEAM_ST=['To contact','Contacted','In talks','Confirmed','Declined'];
 // Questionnaire: [id, type (t text, a long text, m multi, s single, mood), question, options or placeholder]
 const QS=[
@@ -324,7 +337,7 @@ const QS=[
 /* ---------- state ---------- */
 function fresh(){
   let r=addD(today(),84);r=addD(r,(5-r.getDay()+7)%7); // first Friday at least 12 weeks out
-  const s={p:{artist:'Your Artist Name',album:'Your Album Title',date:iso(r),type:'Album',genre:'',audience:'',dist:'',label:'',cat:'CAT-001',demo:true},q:{},chk:{},links:{},n:1,posts:[],
+  const s={p:{artist:'Your Artist Name',album:'Your Album Title',date:iso(r),type:'Album',genre:'',audience:'',dist:'',label:'',cat:'CAT-001',demo:true},q:{},chk:{},links:{},inspo:[],n:1,posts:[],
    brand:{pal:[...PALS[0][1]],font:0,tone:[50,50,50,50],say:'',never:'',logo:''},
    team:[{name:'Jordan Lee',role:'Manager',cat:'Team',contact:'jordan@example.com',st:'Confirmed',notes:'Signs off on budget',ex:1},{name:'Sam Ortiz',role:'Publicist',cat:'PR',contact:'sam@example.com',st:'In talks',notes:'Needs press kit by T−35',ex:1},{name:'Riley Chen',role:'Playlist curator',cat:'Playlist',contact:'@rileyplays',st:'To contact',notes:'Indie soul lists, 40k followers',ex:1}],
    ms:MS0.map((m,i)=>({id:i+1,off:m[0],t:m[1],cat:m[2],st:0})),ui:{view:'month',plat:'',sel:iso(today())}};
@@ -338,7 +351,57 @@ function genPosts(s){
 }
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!S.p||!S.posts)S=fresh();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const norm=()=>{S.q||={};S.chk||={};S.links||={};S.inspo||=[];S.posts||=[];S.ms||=[];S.team||=[];S.brand||={};S.brand.pal||=[...PALS[0][1]];S.brand.tone||=[50,50,50,50];S.brand.font||=0;S.ui||={view:'month',plat:'',sel:iso(today())}};norm();
+const store=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let pushT;const save=()=>{store();clearTimeout(pushT);pushT=setTimeout(pushDirty,700)};
+
+/* ---------- shared project: on claude.ai the page syncs through the artifact's database; anywhere else it stays local ---------- */
+const SHARED={p:['p'],q:['q'],brand:['brand'],chk:['chk'],links:['links'],plan:['posts','ms','team','n']};
+let db=null,assets=null,user=null,uid='',names={},synced={},writing={},ready=false,pendingRender=false,INSPO=[],inspoLive=false;
+const canon=v=>Array.isArray(v)?'['+v.map(canon).join(',')+']':v&&typeof v==='object'?'{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}':JSON.stringify(v??null);
+const pack=(k,src=S)=>{const o={};SHARED[k].forEach(f=>o[f]=src[f]);if(k==='brand'&&String(o.brand.logo).startsWith('data:'))o.brand={...o.brand,logo:''};return o};
+const SYNC={local:'Saved in this browser only',loading:'Connecting to the shared project…',live:'Shared project · all changes saved',saving:'Saving…',ro:'View only · ask the owner for edit access',off:'Shared project unreachable · changes stay in this browser'};
+function setSync(s){const el=$('#hSync');if(el){el.dataset.s=s;el.textContent=SYNC[s]}}
+async function pushDirty(){
+  if(!db||!ready||$('#hSync').dataset.s==='ro')return;
+  for(const k of Object.keys(SHARED)){const o=pack(k),j=canon(o);if(j===synced[k]||writing[k])continue;
+    writing[k]=1;setSync('saving');
+    try{await db.doc('hq/'+k).set(JSON.parse(JSON.stringify(o)));synced[k]=j;writing[k]=0}catch(e){writing[k]=0;setSync(e&&e.code==='not_granted'?'ro':'off');return}}
+  if(Object.keys(SHARED).some(k=>!writing[k]&&canon(pack(k))!==synced[k]))return pushDirty();
+  setSync('live');
+}
+function softRender(){const a=document.activeElement;if(a&&$('#main').contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&a.type!=='checkbox'){pendingRender=true;return}const y=scrollY;render();scrollTo(0,y)}
+async function resolveNames(){if(!user)return;const ids=[...new Set(INSPO.map(i=>i.by).filter(Boolean))].filter(i=>!(i in names));if(!ids.length)return;const ps=await user.profiles(ids);ids.forEach(i=>names[i]=(ps&&ps[i]&&ps[i].name)||'');if(view==='inspo')softRender()}
+async function connect(){
+  if(!window.claude||!window.claude.use)return;
+  setSync('loading');
+  [db,assets,user]=await Promise.all([claude.use('db'),claude.use('assets'),claude.use('user')]);
+  if(!db){setSync('local');return}
+  if(user)uid=(await user.id())||'';
+  const base=fresh(),timer=setTimeout(()=>{if(!ready)setSync('off')},10000);
+  db.collection('hq').onSnapshot(snap=>{
+    let changed=false;const seen={};
+    snap.docs.forEach(d=>{const k=d.id;if(!SHARED[k])return;seen[k]=1;if(d.metadata.hasPendingWrites)return;const v=d.data()||{},j=canon(pack(k,{...pack(k,base),...v}));
+      if(j===synced[k])return;const localDirty=ready&&canon(pack(k))!==synced[k];synced[k]=j;if(localDirty)return;
+      const keep=k==='brand'&&String(S.brand.logo).startsWith('data:')?S.brand.logo:'';
+      SHARED[k].forEach(f=>{if(v[f]!==undefined)S[f]=v[f]});norm();if(keep&&!S.brand.logo)S.brand.logo=keep;changed=true});
+    const first=!ready;if(first){ready=true;clearTimeout(timer);Object.keys(SHARED).forEach(k=>{if(!seen[k])synced[k]=canon(pack(k,base))})}
+    if(changed){store();softRender()}
+    if($('#hSync').dataset.s!=='saving')setSync('live');if(first)pushDirty(); // one-time upload of anything typed here before the project was shared
+  },e=>{clearTimeout(timer);setSync(e&&e.code==='not_granted'?'ro':'off')});
+  db.collection('inspo').onSnapshot(snap=>{INSPO=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.at||0)-(a.at||0));inspoLive=true;if(view==='inspo')softRender();resolveNames()},()=>{});
+  if(view==='inspo'||view==='guide'||view==='discovery')softRender();
+}
+const inspoList=()=>inspoLive?INSPO:S.inspo;
+async function addInspo(item){const it={cat:(S.ui.iadd||'Other'),note:'',by:uid,at:Date.now(),loves:[],...item};if(inspoLive)await db.collection('inspo').add(it);else{S.inspo.unshift({id:'l'+S.n++,...it});save();softRender()}}
+async function uploadFiles(files){
+  const msg=$('#upMsg'),say=t=>{const m=$('#upMsg');if(m)m.textContent=t};files=[...files];if(!files.length)return;
+  if(!assets||!inspoLive){say(db?'Uploading needs Editor access. Ask the owner to change your access, or add a link instead.':'Uploads work in the shared version on claude.ai. Here you can add links.');return}
+  let ok=0;for(const f of files){say(`Uploading ${ok+1} of ${files.length}…`);
+    try{const r=await assets.upload(f);await addInspo({kind:f.type.startsWith('video')?'video':f.type.startsWith('image')?'image':'file',asset:r.id,name:f.name});ok++}
+    catch(e){say(e&&e.code==='too_large'?`${f.name} is over 20 MB. Share a link to it instead.`:e&&e.code==='unsupported_type'?`${f.name} is a file type that cannot be uploaded.`:`${f.name} did not upload. Try again in a moment.`);return}}
+  say(`${ok} file${ok>1?'s':''} added.`);
+}
 const setP=(path,v)=>{const ks=path.split('.');let o=S;while(ks.length>1){const k=ks.shift();o=o[k]??={}}o[ks[0]]=v};
 const getP=path=>path.split('.').reduce((o,k)=>o?.[k],S);
 const R=()=>pd(S.p.date),offOf=d=>Math.round((d-R())/DAY),dateOf=o=>addD(R(),o);
@@ -386,7 +449,7 @@ V.overview=()=>{
    ${area('p.audience','Target audience','Who is this record for? Age, places, the artists they already love')}</div>
   <div class="card"><h3>Readiness</h3>${meter('disc','Discovery questions answered')}${meter('dist','Distribution checklist')}${meter('assets','Assets delivered')}${meter('ms','Milestones done')}${meter('posts','Planned posts published')}
    <h3>Next up</h3><div>${next.map(m=>`<div class="check"><span class="tag ${m.off<now?'bad':m.off-now<=7?'warn':''}">${tm(m.off)}</span><div class="tx">${esc(m.t)}</div><span class="due">${fmt(dateOf(m.off))}</span></div>`).join('')||'<p class="muted">Every milestone is done.</p>'}</div></div></div>
-  <div class="card"><h3>How this works</h3><ol class="steps"><li><b>Project setup</b> (this page): the artist confirms the basics.</li><li><b>Discovery</b>: the artist answers the questionnaire, then presses "Copy my answers" and sends them back.</li><li><b>Brand, Calendar, Distribution, Assets, Team, Milestones</b>: the working plan, pre-filled from a 12-week rollout and adjusted as answers come in.</li><li><b>Guide</b>: how to use each section, how to load answers, and the research behind the dates.</li></ol></div>`;
+  <div class="card"><h3>How this works</h3><ol class="steps"><li><b>Project setup</b> (this page): the artist confirms the basics.</li><li><b>Discovery</b>: the artist answers the questionnaire. In the shared project the answers save for everyone.</li><li><b>Inspo</b>: both of you add reference images and links.</li><li><b>Brand, Calendar, Distribution, Assets, Team, Milestones</b>: the working plan, pre-filled from a 12-week rollout and adjusted as answers come in.</li><li><b>Guide</b>: how to use each section, how to load answers, and the research behind the dates.</li></ol></div>`;
 };
 V.discovery=()=>head('Questionnaire','Discovery',`Everything needed to build the brand, the content plan and the release schedule. Short answers are fine. Skip what you do not know yet. Answers save in this browser as you type.`)+
  `<div class="card">${meter('disc','Questions answered')}<p class="small muted">Never type a password here. Account access is handled with team invites from each platform.</p></div>`+
@@ -396,7 +459,20 @@ V.discovery=()=>head('Questionnaire','Discovery',`Everything needed to build the
    if(t==='a')return`<label class="f">${esc(label)}<textarea id="q-${id}" data-k="q.${id}" placeholder="${esc(o)}">${esc(v)}</textarea></label>`;
    if(t==='mood')return`<div class="q" style="grid-column:1/-1"><b>${esc(label)}</b><div class="moods">${MOODS.map(m=>`<button class="mood ${m[0]}" data-act="chip" data-m="1" data-q="${id}" data-v="${m[1]}" aria-pressed="${(v||[]).includes(m[1])}"><span>${m[1]}</span><small>${m[2]}</small></button>`).join('')}</div></div>`;
    return`<div class="q"><b>${esc(label)}</b><div class="chips">${o.map(x=>`<button class="chip" data-act="chip" ${t==='m'?'data-m="1"':''} data-q="${id}" data-v="${esc(x)}" aria-pressed="${t==='m'?(v||[]).includes(x):v===x}">${esc(x)}</button>`).join('')}</div></div>`}).join('')}</div></div>`).join('')+
- `<div class="card"><h3>Send your answers</h3><p class="muted">Press the button, then paste into a text, email or message. Nothing is sent automatically.</p><div class="row"><button class="btn" data-act="copy">Copy my answers</button><span class="small muted" id="copyMsg" role="status"></span></div><pre class="out" id="out" tabindex="0">${esc(exportText())}</pre></div>`;
+ `<div class="card"><h3>${db?'Your answers are saved':'Send your answers'}</h3><p class="muted">${db?'This is the shared project, so everyone with access sees your answers as soon as the header says "all changes saved". The copy button is only a backup.':'Press the button, then paste into a text, email or message. Nothing is sent automatically from this copy.'}</p><div class="row"><button class="btn" data-act="copy">Copy my answers</button><span class="small muted" id="copyMsg" role="status"></span></div><pre class="out" id="out" tabindex="0">${esc(exportText())}</pre></div>`;
+V.inspo=()=>{
+  const ui=S.ui,all=inspoList(),list=all.filter(i=>!ui.icat||i.cat===ui.icat),canUp=!!(assets&&inspoLive);
+  const media=i=>i.kind==='image'?`<img src="/_blob/${esc(i.asset)}" alt="${esc(i.note||i.name||'Inspiration image')}" loading="lazy">`:i.kind==='video'?`<video src="/_blob/${esc(i.asset)}" controls preload="metadata"></video>`:i.kind==='file'?`<div class="lk"><a href="/_blob/${esc(i.asset)}" target="_blank" rel="noopener">${esc(i.name||'File')}</a></div>`:i.kind==='link'?`<div class="lk"><a href="${esc(/^https?:\/\//i.test(i.url)?i.url:'https://'+i.url)}" target="_blank" rel="noopener">${esc(String(i.url).replace(/^https?:\/\/(www\.)?/,'').slice(0,70))}</a></div>`:'';
+  return head('Moodboard','Inspiration board',`Drop in anything that feels like this record: covers, photos, outfits, fonts, video stills, screenshots. Add a line about what you like in each one. Everyone with access sees the same board.`)+
+  `<div class="grid g2"><div class="card"><h3>Add images, video or PDFs</h3><label class="drop" id="drop"><input type="file" id="inspoFile" multiple accept="image/*,video/*,application/pdf"><b>${canUp?'Drop files here, paste a screenshot, or tap to choose':'File uploads are not available in this view'}</b><span class="small muted">${canUp?'Up to 20 MB each. Several at once is fine.':db?'You need Editor access to upload. Links still work.':'Open the shared version on claude.ai to upload. Links work here.'}</span></label>
+    <label class="f">File under${sel('id="inspoCat" data-ui="iadd"',INSPO_CATS,ui.iadd||'Other')}</label><span class="small muted" id="upMsg" role="status"></span></div>
+   <div class="card"><h3>Add a link</h3><label class="f">Link<input type="url" id="inspoUrl" placeholder="Pinterest board, Instagram post, YouTube video…"></label><label class="f">What do you like about it?<input type="text" id="inspoNote" placeholder="The colour, the framing, the mood…"></label><div class="row"><button class="btn" data-act="addlink">Add to board</button></div></div></div>
+  <div class="row spread"><div class="chips"><button class="chip" data-act="icat" data-v="" aria-pressed="${!ui.icat}">Everything · ${all.length}</button>${INSPO_CATS.map(c=>{const n=all.filter(i=>i.cat===c).length;return n?`<button class="chip" data-act="icat" data-v="${c}" aria-pressed="${ui.icat===c}">${c} · ${n}</button>`:''}).join('')}</div></div>
+  ${list.length?`<div class="pins">${list.map(i=>{const lv=i.loves||[],mine=lv.includes(uid||'me');return`<div class="pin">${media(i)}<div class="bd"><input type="text" id="in-${esc(i.id)}" data-in="${esc(i.id)}" value="${esc(i.note)}" placeholder="What do you like about this?" aria-label="Note">
+    <div class="row spread"><span class="tag">${esc(i.cat||'Other')}</span><span class="row"><button class="btn ghost sm love" data-act="love" data-id="${esc(i.id)}" aria-pressed="${mine}" aria-label="Love this">♥ ${lv.length||''}</button><button class="btn ghost sm" data-act="delinspo" data-id="${esc(i.id)}" aria-label="Remove from board">✕</button></span></div>
+    <span class="small muted">${esc(names[i.by]||(i.by&&i.by===uid?'You':'')||'')}${i.at?` · ${fmt(new Date(i.at))}`:''}</span></div></div>`}).join('')}</div>`
+   :`<div class="card"><p class="muted">${db&&!inspoLive?'Loading the board…':all.length?'Nothing filed under this heading yet.':'The board is empty. Add the first image or link above. Ten to twenty references is a good target before the brand work starts.'}</p></div>`}`;
+};
 V.distribution=()=>head('Stores and rights','Distribution checklist',`Dates count back from the release date. Red dates have passed. Platform rules change, so confirm specifics in each platform's own artist tools before you deliver files.`)+
  `<div class="card">${meter('dist','All distribution tasks')}</div><div class="grid g2">`+DIST.map((g,gi)=>`<div class="card"><div><h3>${esc(g.n)}</h3><p class="small muted">${esc(g.s)}</p></div>${meter('dist'+gi,'Done')}<div>${g.i.map((it,ii)=>`<label class="check"><input type="checkbox" id="d${gi}_${ii}" data-c="d${gi}_${ii}"${S.chk['d'+gi+'_'+ii]?' checked':''}><span class="tx">${esc(it[0])}</span>${due(it[1])}</label>`).join('')}</div></div>`).join('')+`</div>`;
 V.calendar=()=>{
@@ -472,6 +548,7 @@ V.guide=()=>head('User guide','How to use Album Launch HQ',`A short walkthrough 
  `<div class="grid g2"><div class="card"><h3>Section by section</h3><ol class="steps">
   <li><b>Overview.</b> Enter artist, album and release date. Every due date and the countdown derive from the release date.</li>
   <li><b>Discovery.</b> The artist answers what they can. Tap chips to choose, type short answers, pick visual directions. "Copy my answers" produces a readable summary plus a data block.</li>
+  <li><b>Inspo.</b> Upload images, video or PDFs, or add links. Write one line on each about what you like, and tap ♥ on other people's picks you agree with.</li>
   <li><b>Distribution.</b> Work top to bottom. Metadata and rights come first because store profiles cannot fix a missing registration.</li>
   <li><b>Calendar.</b> Switch between month and week, filter by platform, click a day to add or tick posts. "Rebuild plan" restores the template.</li>
   <li><b>Brand.</b> Upload the logo, set five colours, choose a type pairing, slide the tone scales. The mockups show the result.</li>
@@ -480,8 +557,8 @@ V.guide=()=>head('User guide','How to use Album Launch HQ',`A short walkthrough 
   <li><b>Milestones.</b> Edit titles and dates, set status, add your own.</li></ol></div>
  <div class="card"><h3>Load answers someone sent you</h3><p class="small muted">Paste the full text the artist copied from Discovery. Their project details, answers and brand choices replace the ones in this browser. Your checklists, calendar and contacts stay.</p>
   <textarea id="imp" aria-label="Pasted answers" placeholder="Paste here…"></textarea><div class="row"><button class="btn" data-act="import">Load answers</button><span class="small muted" id="impMsg" role="status"></span></div>
-  <h3>Where data lives</h3><p class="small">Everything saves in the browser you are using. Nothing uploads anywhere. Two people opening the same link each see their own copy, which is why answers travel by copy and paste.</p>
-  <h3>Start over</h3><div class="row"><button class="btn ghost" data-act="reset" id="reset">Erase everything in this browser</button></div></div></div>
+  <h3>Where data lives</h3><p class="small">${db?'This is the shared project on claude.ai. Answers, checklists, the calendar, contacts and the inspiration board are stored with the page and appear for everyone who has access. The line under the title shows the save status. People with view-only access can read but not change anything.':'This copy saves in the browser you are using and nothing uploads anywhere, so answers travel by copy and paste. The shared version on claude.ai keeps one project for everyone.'}</p>
+  <h3>Start over</h3><div class="row"><button class="btn ghost" data-act="reset" id="reset">${db?'Reset the shared project for everyone':'Erase everything in this browser'}</button></div></div></div>
  <div class="card"><h3>Research behind the plan</h3><ul class="plain small">
   <li><b>Pitch window.</b> Spotify editorial pitches must go in at least 7 days before release, one song per release, 500 characters; guides recommend 2–6 weeks. <a href="https://www.hypebot.com/the-2026-guide-for-pitching-spotify-editorial-playlists/" target="_blank" rel="noopener">Hypebot</a>, <a href="https://routenote.com/blog/playlist-pitching-in-2026-what-artists-need-to-know/" target="_blank" rel="noopener">RouteNote</a>, <a href="https://orphiq.com/resources/spotify-submission-timeline" target="_blank" rel="noopener">Orphiq</a></li>
   <li><b>Rollout shape.</b> A 10–12 week plan with a lead single 6–8 weeks out, a second about 4 weeks out, and no more than four singles before the album. Singles need their own artwork. <a href="https://orphiq.com/resources/album-release-plan" target="_blank" rel="noopener">Orphiq</a>, <a href="https://blog.symphonic.com/release-strategies-for-independent-artists-waterfall-vs-traditional-vs-singles/" target="_blank" rel="noopener">Symphonic</a>, <a href="https://playlistsupply.com/blog/singles-vs-albums-strategy-2026/" target="_blank" rel="noopener">PlaylistSupply</a></li>
@@ -520,9 +597,12 @@ document.addEventListener('change',e=>{
   if(d.c){S.chk[d.c]=t.checked;save();refreshMeters()}
   else if(d.pd){const p=S.posts.find(p=>p.id==d.pd);if(p)p.done=t.checked?1:0;rerender()}
   else if(d.ms){const m=S.ms.find(m=>m.id==d.ms);if(!m)return;if(d.f==='date'){if(t.value)m.off=offOf(pd(t.value))}else if(d.f==='st')m.st=+t.value;else m[d.f]=t.value;rerender()}
+  else if(d.in){const v=t.value;if(inspoLive)db.doc('inspo/'+d.in).update({note:v}).catch(()=>{});else{const it=S.inspo.find(i=>i.id===d.in);if(it){it.note=v;save()}}}
+  else if(d.ui){S.ui[d.ui]=t.value;store()}
+  else if(t.id==='inspoFile'){uploadFiles(t.files);t.value=''}
   else if(d.k==='p.date'){if(!t.value){S.p.date=iso(addD(today(),84))}rerender()}
   else if(d.k&&d.k.startsWith('team.')&&t.tagName==='SELECT')rerender();
-  else if(t.id==='logoFile'&&t.files[0]){const fr=new FileReader();fr.onload=()=>{S.brand.logo=fr.result;save();render()};fr.readAsDataURL(t.files[0])}
+  else if(t.id==='logoFile'&&t.files[0]){const f=t.files[0];if(assets)assets.upload(f).then(r=>{S.brand.logo='/_blob/'+r.id;save();render()},()=>{});else{const fr=new FileReader();fr.onload=()=>{S.brand.logo=fr.result;save();render()};fr.readAsDataURL(f)}}
 });
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]');if(!t)return;const d=t.dataset,ui=S.ui;
@@ -533,7 +613,11 @@ document.addEventListener('click',e=>{
      try{navigator.clipboard.writeText(txt).then(()=>msg.textContent='Copied. Paste it into a message.',fb)}catch(x){fb()}break}
    case'import':{const raw=$('#imp').value,i=raw.indexOf('---DATA---'),msg=$('#impMsg');try{const o=JSON.parse(raw.slice(i<0?0:i+10));if(!o.p)throw 0;S.p={...S.p,...o.p};S.q=o.q||{};S.brand={...S.brand,...(o.brand||{})};save();paintHead();msg.textContent=`Loaded answers for ${S.p.artist}.`}catch(x){msg.textContent='That text has no data block. Paste everything the artist copied, including the last line.'}break}
    case'blank':S.p={...S.p,artist:'',album:'',cat:'',demo:false};S.team=S.team.filter(r=>!r.ex);rerender();break;
-   case'reset':if(t.dataset.arm){try{localStorage.removeItem(KEY)}catch(x){}S=fresh();location.hash='overview';render()}else{t.dataset.arm=1;t.textContent='Press again to erase everything'}break;
+   case'reset':if(t.dataset.arm){try{localStorage.removeItem(KEY)}catch(x){}S=fresh();save();location.hash='overview';render()}else{t.dataset.arm=1;t.textContent='Press again to erase everything'}break;
+   case'icat':ui.icat=d.v;store();softRender();break;
+   case'addlink':{const u=$('#inspoUrl').value.trim();if(!u){$('#inspoUrl').focus();break}addInspo({kind:'link',url:u,note:$('#inspoNote').value.trim()}).then(()=>{const a=$('#inspoUrl'),b=$('#inspoNote');if(a)a.value='';if(b)b.value=''},()=>{});break}
+   case'love':{const it=inspoList().find(i=>i.id===d.id);if(!it)break;const me=uid||'me',lv=(it.loves||[]).filter(x=>x!==me);if(lv.length===(it.loves||[]).length)lv.push(me);if(inspoLive)db.doc('inspo/'+it.id).update({loves:lv}).catch(()=>{});else{it.loves=lv;save();softRender()}break}
+   case'delinspo':if(!t.dataset.arm){t.dataset.arm=1;t.textContent='Remove?';break}{const it=inspoList().find(i=>i.id===d.id);if(!it)break;if(inspoLive)db.doc('inspo/'+it.id).delete().then(()=>{if(it.asset&&assets)assets.delete(it.asset).catch(()=>{})},()=>{});else{S.inspo=S.inspo.filter(i=>i.id!==d.id);save();softRender()}break}
    case'day':ui.sel=d.d;rerender();break;
    case'calview':ui.view=d.v;rerender();break;
    case'calplat':ui.plat=d.v;rerender();break;
@@ -550,5 +634,8 @@ document.addEventListener('click',e=>{
    case'delms':S.ms=S.ms.filter(m=>m.id!=d.id);rerender();break;
   }
 });
-render();
+document.addEventListener('focusout',()=>setTimeout(()=>{if(pendingRender){pendingRender=false;softRender()}},50));
+document.addEventListener('paste',e=>{if(view!=='inspo')return;const fs=[...(e.clipboardData?.files||[])];if(fs.length){e.preventDefault();uploadFiles(fs)}});
+['dragover','dragleave','drop'].forEach(n=>document.addEventListener(n,e=>{const z=e.target.closest&&e.target.closest('#drop');if(!z)return;e.preventDefault();z.classList.toggle('over',n==='dragover');if(n==='drop')uploadFiles(e.dataTransfer.files)}));
+render();connect();
 </script>

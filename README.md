@@ -8,6 +8,7 @@ An interactive dashboard and client questionnaire for planning a music artist's 
 |---|---|
 | Overview | Project setup form (artist, album, release date, audience…). Drives the header, countdown, due dates, calendar and mockups. Readiness meters. |
 | Discovery | 61-question client intake across 9 areas (story, album, audience, goals and budget, brand, content, rights, live/merch/press, working together). "Copy my answers" exports a readable summary plus a data block. |
+| Inspo | Shared inspiration board: upload images, video and PDFs (20 MB each) or add links, file by category, add a note, ♥ picks. |
 | Distribution | 45-item checklist: metadata and rights, Spotify, Apple Music, YouTube Music, Amazon Music, other stores. Due dates count back from release. |
 | Calendar | 97 pre-planned posts from 9 weeks before to 4 weeks after release. Month and week views, platform filter, add/tick/delete posts, platform playbook. |
 | Brand | Logo slot, 5-colour palette, type pairings, tone sliders, voice and visual style notes, live brand board and six post mockups with example captions. |
@@ -24,14 +25,17 @@ An interactive dashboard and client questionnaire for planning a music artist's 
 
 After any edit: `./build.sh`
 
-## How the client workflow runs
+## Two ways to run it
 
-1. Send the client the hosted link.
-2. They fill in Overview and Discovery. Answers save in their browser.
-3. They press **Copy my answers** and paste the text back to you by message or email.
-4. You open your copy, go to **Guide → Load answers someone sent you**, paste, and load.
+**Shared project (recommended)** — the claude.ai artifact published from `dashboard.html` with the `db`, `assets` and `user` capabilities. Answers, checklists, calendar, contacts and the Inspo board sync for everyone with access. The line under the title shows save status.
 
-Data is stored in each browser's `localStorage` (key `albumLaunchHQ.v1`). Nothing is uploaded. Two people on the same link see separate copies.
+1. Open the artifact, use **Share**, and invite the client by email as an **Editor** (Editors can write answers and upload files).
+2. Keep "anyone with the link" sharing off: link visitors are read-only, and an outside Editor loses edit rights while link sharing is on.
+3. The client needs a Claude account (free works) under the invited email.
+
+Shared data lives in the artifact's database: `hq/p`, `hq/q`, `hq/brand`, `hq/chk`, `hq/links`, `hq/plan`, and one document per board item in `inspo`. Uploaded files are artifact assets served at `/_blob/<id>`.
+
+**Standalone copy** — `index.html` on any static host. Same page, but it saves only in each visitor's browser, uploads are off (links still work on the Inspo board), and answers come back through **Copy my answers** → **Guide → Load answers**.
 
 ## Hosting (free options)
 
@@ -47,13 +51,13 @@ Nothing is artist-specific. Send the same link to a new client; each browser sta
 
 ## Known limits
 
-- No shared live state between you and the client; answers travel by copy and paste.
+- Shared mode is last-writer-wins per section: if two people edit the same section in the same second, one edit can be lost.
+- The standalone copy has no shared state.
 - Uploaded logo is kept in browser storage only; very large images may not persist.
 - Platform specs and pitch windows come from secondary sources (distributor and marketing guides, linked in the Guide tab). Confirm in each platform's own artist tools before delivering files.
 - Timeline assumes a 12-week rollout with two pre-release singles.
 
 ## Next steps worth considering
 
-- Shared live version (client answers appear for you without copy and paste).
 - Export of the calendar to CSV for a scheduler.
 - Figma or Canva versions of the six post mockups once the brand is chosen.
